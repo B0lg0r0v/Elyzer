@@ -1,0 +1,173 @@
+Received: from AM8P194MB1703.EURP194.PROD.OUTLOOK.COM (2603:10a6:20b:326::20)
+ by PAWP194MB2202.EURP194.PROD.OUTLOOK.COM with HTTPS; Thu, 30 Nov 2023
+ 13:18:48 +0000
+Received: from AS8PR04CA0075.eurprd04.prod.outlook.com (2603:10a6:20b:313::20)
+ by AM8P194MB1703.EURP194.PROD.OUTLOOK.COM (2603:10a6:20b:326::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.24; Thu, 30 Nov
+ 2023 13:18:46 +0000
+Received: from AM0EUR02FT052.eop-EUR02.prod.protection.outlook.com
+ (2603:10a6:20b:313:cafe::14) by AS8PR04CA0075.outlook.office365.com
+ (2603:10a6:20b:313::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7025.27 via Frontend
+ Transport; Thu, 30 Nov 2023 13:18:46 +0000
+Authentication-Results: spf=pass (sender IP is 104.47.14.50)
+ smtp.mailfrom=wuestenrot.de; dkim=pass (signature was verified)
+ header.d=wuestenrot.de;dmarc=pass action=none
+ header.from=wuestenrot.de;compauth=pass reason=100
+Received-SPF: Pass (protection.outlook.com: domain of wuestenrot.de designates
+ 104.47.14.50 as permitted sender) receiver=protection.outlook.com;
+ client-ip=104.47.14.50; helo=EUR04-VI1-obe.outbound.protection.outlook.com;
+ pr=C
+Received: from EUR04-VI1-obe.outbound.protection.outlook.com (104.47.14.50) by
+ AM0EUR02FT052.mail.protection.outlook.com (10.13.55.225) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7046.24 via Frontend Transport; Thu, 30 Nov 2023 13:18:46 +0000
+X-IncomingTopHeaderMarker:
+ OriginalChecksum:2B599374E21659B2E5136AF384344E88615CCED545FBA79E41786DFDDFF5DDBB;UpperCasedChecksum:7A14B008F220ECE3E5160E3B19C0A94E50AAE4AFBD1FD43ABBD592446940757D;SizeAsReceived:4584;Count:54
+Received: from PAWP194MB2202.EURP194.PROD.OUTLOOK.COM (2603:10a6:102:34e::6)
+ by DBBP194MB1180.EURP194.PROD.OUTLOOK.COM (2603:10a6:10:1e2::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.22; Thu, 30 Nov
+ 2023 13:18:45 +0000
+Resent-From: <arthur.minasyan@outlook.fr>
+Received: from PAWP194MB2202.EURP194.PROD.OUTLOOK.COM ([::1]) by
+ PAWP194MB2202.EURP194.PROD.OUTLOOK.COM ([fe80::f24d:b1da:e2b9:872e%3]) with
+ Microsoft SMTP Server id 15.20.7046.024; Thu, 30 Nov 2023 13:18:45 +0000
+Authentication-Results-Original: spf=pass (sender IP is 195.95.137.183)
+ smtp.mailfrom=wuestenrot.de; dkim=pass (signature was verified)
+ header.d=wuestenrot.de;dmarc=pass action=none
+ header.from=wuestenrot.de;compauth=pass reason=100
+Received-SPF: Pass (protection.outlook.com: domain of wuestenrot.de designates
+ 195.95.137.183 as permitted sender) receiver=protection.outlook.com;
+ client-ip=195.95.137.183; helo=mail6.ww-informatik.de; pr=C
+X-IncomingTopHeaderMarker:
+ OriginalChecksum:9E977F0CE93CC7DB0115D7AE2CD7DF1FE80E43EC28D21D75296278064A28F32F;UpperCasedChecksum:0D31FED11AF5A818E65AD7C059214A74F8B1A3B87362C61AEE1BFAE1E99744B3;SizeAsReceived:1992;Count:24
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=wuestenrot.de; i=@wuestenrot.de; q=dns/txt;
+  s=wwi-20191018; t=1701350321; x=2016710321;
+  h=from:to:subject:date:message-id:references:in-reply-to:
+   mime-version;
+  bh=ocuE5kpZyAFzzwOejj4l3+aRqOgdJegpCmNgbZhCq8M=;
+  b=l3MWmHWDLy3FfJpDqG1eooib7UGbPfRRPySaEpAPs1KJJnmWIhWJhPY5
+   vFuy3y6Gv/48PA+FleSKnUhhRica25UDWHZogiuy6Ee2mUjftKjHOjIV8
+   2W9swXJWh6tDLRrPQqGRNubAkTFt7uxp7/Ifuy+F3ifLlGuI0OgsoBwiN
+   HtShN/7ICdtsua6LUpydUt4/K517r8knZgMsiC1LhnaOMGpjn6waJneO8
+   cDQNi567cibZ+WQdxmxhD/YShrYzKjjKoT/VP5rnEeSbXVBkNhxMruFJq
+   Hcvf+pLoKSUmduiHl/7yKmqSkdjEBliToDg4Wj0qz1aFyZsizkK1sI+WX
+   w==;
+X-ORIG-EnvelopeFrom: wadim.mitlewski@wuestenrot.de
+X-ORIG-Subject: AW: Kredit & Bausparvertrag | Minasyan
+From: "Mitlewski, Wadim (BSW/KNQ-04)" <wadim.mitlewski@wuestenrot.de>
+To: Arthur Minasyan <arthur.minasyan@outlook.fr>
+Subject: AW: Kredit & Bausparvertrag | Minasyan
+Thread-Topic: Kredit & Bausparvertrag | Minasyan
+Thread-Index: AdofFN2YjkkLo/qKT0CAnjlKMaOa7wB+kzNgAJ696XMAAVpRgA==
+Date: Thu, 30 Nov 2023 13:18:29 +0000
+Message-ID: <fa34c3bd9e5b4302963a5d8b85ff7897@wuestenrot.de>
+References: <PAWP194MB220232F8D363544A1B491B9A81B8A@PAWP194MB2202.EURP194.PROD.OUTLOOK.COM>
+ <4704e02f84304c2a8f00e3cfb0adb2b0@wuestenrot.de>
+ <PAWP194MB2202678A6D5ABA13FA84526D8182A@PAWP194MB2202.EURP194.PROD.OUTLOOK.COM>
+In-Reply-To: <PAWP194MB2202678A6D5ABA13FA84526D8182A@PAWP194MB2202.EURP194.PROD.OUTLOOK.COM>
+Accept-Language: de-DE, en-US
+Content-Language: de-DE
+X-MS-Has-Attach: yes
+X-MS-TNEF-Correlator:
+x-originating-ip: [172.22.193.245]
+x-symprex-messageprocessed: true
+x-symprex-signatureinjected: false
+x-tm-snts-smtp: CED20DF5C5BA597BDD1AC844066D8ED6485E34C6EDF9C48409F61AD33EC856522000:8
+x-c2processedorg: 347d71ad-3046-4c8d-ba0b-158b2f2003c7
+Content-Type: multipart/mixed;
+	boundary="_010_fa34c3bd9e5b4302963a5d8b85ff7897wuestenrotde_"
+MIME-Version: 1.0
+Return-Path: wadim.mitlewski@wuestenrot.de
+X-IncomingHeaderCount: 24
+X-EOPAttributedMessage: 1
+X-EOPTenantAttributedMessage: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa:1
+X-MS-TrafficTypeDiagnostic:
+ VI1EUR02FT022:EE_|AS8P194MB1671:EE_|PAWP194MB2202:EE_|DBBP194MB1180:EE_|AM0EUR02FT052:EE_|AM8P194MB1703:EE_|PAWP194MB2202:EE_
+X-MS-UserLastLogonTime: 11/30/2023 1:13:31 PM
+X-MS-Office365-Filtering-Correlation-Id: 020d458e-dcb0-4f9a-810c-08dbf1a6e1f2
+X-Microsoft-Antispam-Untrusted: BCL:0;
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8P194MB1671
+X-MS-Exchange-Transport-EndToEndLatency: 00:00:02.5813635
+X-MS-Exchange-Processed-By-BccFoldering: 15.20.7046.024
+X-MS-Exchange-Inbox-Rules-Loop: arthur.minasyan@outlook.fr
+X-IncomingHeaderCount: 54
+X-MS-Exchange-Organization-ExpirationStartTime: 30 Nov 2023 13:18:46.0688
+ (UTC)
+X-MS-Exchange-Organization-ExpirationStartTimeReason: OriginalSubmit
+X-MS-Exchange-Organization-ExpirationInterval: 1:00:00:00.0000000
+X-MS-Exchange-Organization-ExpirationIntervalReason: OriginalSubmit
+X-MS-Exchange-Organization-Network-Message-Id:
+ 020d458e-dcb0-4f9a-810c-08dbf1a6e1f2
+X-MS-Exchange-Organization-MessageDirectionality: Incoming
+X-MS-Exchange-Transport-CrossTenantHeadersStripped:
+ AM0EUR02FT052.eop-EUR02.prod.protection.outlook.com
+X-MS-Exchange-Transport-CrossTenantHeadersPromoted:
+ AM0EUR02FT052.eop-EUR02.prod.protection.outlook.com
+X-MS-PublicTrafficType: Email
+X-MS-Exchange-Organization-AuthSource:
+ AM0EUR02FT052.eop-EUR02.prod.protection.outlook.com
+X-MS-Exchange-Organization-AuthAs: Anonymous
+X-MS-Office365-Filtering-Correlation-Id-Prvs:
+ 8b59cb1d-29ca-437c-0b4d-08dbf1a6df55
+X-MS-Exchange-EOPDirect: true
+X-Sender-IP: 104.47.14.50
+X-SID-PRA: WADIM.MITLEWSKI@WUESTENROT.DE
+X-SID-Result: PASS
+X-MS-Exchange-Organization-PCL: 2
+X-Microsoft-Antispam: BCL:0;
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 30 Nov 2023 13:18:46.0063
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 020d458e-dcb0-4f9a-810c-08dbf1a6e1f2
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-AuthSource:
+ AM0EUR02FT052.eop-EUR02.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM8P194MB1703
+X-MS-Exchange-Processed-By-BccFoldering: 15.20.7046.024
+X-MS-Exchange-Organization-SCL: -1
+X-Message-Info:
+	qZelhIiYnPkx84CNH6AeQs2r1mfbx475RiI5K0+Xb2co4FyeG9R6dbFnhmLuQOX2huWIwA3cx7ztDJWwm81YjvNcU30ETps+cPYYrBatFqJXysQLYG6bMNBjAGBGYTI8vCttag9eP2ozAwXTGiw/0lKj/UfM9et7Dhf9s3L7pRiUGDdq6nqPwp1fsjtUi1bNI+PoXTx749E=
+X-Message-Delivery: Vj0xLjE7dXM9MDtsPTA7YT0xO0Q9MTtHRD0xO1NDTD0tMQ==
+X-Microsoft-Antispam-Mailbox-Delivery:
+	ucf:0;jmr:0;ex:0;auth:1;dest:I;OFR:SpamFilterPass;ENG:(5062000305)(920221119095)(90000117)(920221120095)(90013020)(91025020)(91040095)(9050020)(9060121)(9100341)(1010050)(944500132)(2008001134)(4810010)(4910033)(9920006)(9510006)(10105021)(9320005)(9230038)(120001);
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?waCPV7VSUdSVoOgG032WgShj1wqHVXsrt/YG8msIbqfeURKhQhWRt63vR3E4?=
+ =?us-ascii?Q?9h1QCcBg5a+biTgnn6H5uE3YYSzcU10e9ffgXe2GdrtmGhC75CQlU8OXmxbz?=
+ =?us-ascii?Q?YAKfajC+nscYz3ypky6Ko8ynf10Ca+PV4zhUjQNhH3rjYCb/bUnuVdSVGMiX?=
+ =?us-ascii?Q?hPGAaxR/Jiyuc1lZtznXxfqdfsgdusJDqAOpxxcs7PJdUUVNaLZ0m9aSFceM?=
+ =?us-ascii?Q?mQjzOJXJqehvQG1bDhXLmUAiKasEjzwbvT4W24jc8sxdZnJfQ3uoEHz+qetL?=
+ =?us-ascii?Q?MopeLfpU8BMhEYKQM7H15RbyMUrfJr6kum23JyvHAaDnMFDfPpaCESKK1MjC?=
+ =?us-ascii?Q?CyC3XOz3rNzXuWC8GCi1sAHHzHZuXMEP6vNzzntGN0Orl7Kj5nZru+PWHYaO?=
+ =?us-ascii?Q?Au26lPtISMddM4Lm/a0dIqG/gCLoEntIdGDMIVdzKqbF9mcRz6MH3OhOBjcK?=
+ =?us-ascii?Q?TF9hSLdoC33i3YNuRBpf2prU78zRCfttpF/vZwm2h1Mi7ct2gEraPAhxATCw?=
+ =?us-ascii?Q?873Ryfwz0HH4S7sTf3p1mUTt7qY9Qf9GC5+ksPsij/NkH9Q2t2wil4gSlDYb?=
+ =?us-ascii?Q?S7mVJzE1En5Ol1BNc3QLFoJCUSSI49vvq9aAzA6EGsTODQUZYU8iuwIlehRX?=
+ =?us-ascii?Q?JoIKIL9sx1ZMrqz8wFVXrcMO1LgXPA8PxT12kPEFrM4lXZ0saUhc/+8kwveR?=
+ =?us-ascii?Q?PmygYjFA5iHdfYflmtHpX8CoQ//Mdw+wLbtSd/uOTb9tgcfuqdnJH6iTnQq2?=
+ =?us-ascii?Q?cRxy1PpB8qgw4UJVAXUTDYEaiUsNUNx2as2wqmi2T4/tCBHmu7+Qcu3rousa?=
+ =?us-ascii?Q?Lvo/tGGetfm7Gh7siTbF60aerJWhzYykRurH7rC96/j5o6S+O4NpGvzE4jFp?=
+ =?us-ascii?Q?mkpp3KaHQf0zXh2FYmSDgVnfwbnPzvK93xn0oY2XHnGwtUeaevH90OcRIdCP?=
+ =?us-ascii?Q?bD6SsvJe7vnu1lvB/Kyd7yslJQyIMtOAVelCQHWGOHVOU2zindlh/x9pFCrQ?=
+ =?us-ascii?Q?HB99xgjz85wdxAA2ZGCmRGAXH7C9P5SAgIucrSisXBz4aFcrifKjXmNkIfIg?=
+ =?us-ascii?Q?QqYCdQ13su5rKpYwkOwd/W/RpzOnpiGHoe43rwacO1HYb259B8SC3piwwd76?=
+ =?us-ascii?Q?F8KFop/K8Ah1NzkyyoBQS3di/WGkByiv0zwyphnDnDeQ54OZSQYu/dDNjhga?=
+ =?us-ascii?Q?Zmj+GhWmdstpFKAzV1jTdOwHab2jlej94186xKOuY7enZf9OqnOTBqpUR9PY?=
+ =?us-ascii?Q?G4+2fZNmpf6b5uwlUmFTXGu2CA+bvu6J8O6swFpceO9PqR2On7yQPCfsgBQM?=
+ =?us-ascii?Q?8HTpzCxL72xCDlrjoxAwhUYATyStJbdpnitIHa0IcBDzgzg68zzYJWDfm661?=
+ =?us-ascii?Q?ubA2IUdlXG8F4a6G0srPWuZN+j7dXdI0TEn1MgyGMQnQ37a87nfcOjHlEkTH?=
+ =?us-ascii?Q?ioUT/thQv7SMuHisHHq1Ny08gkbcDHEVeUgAW5zdtGwJF63y0+od0lM54aVr?=
+ =?us-ascii?Q?oTgpEksuPyiR9mglqq4L7pizJyiQj0FxlOElntuB2SSiUL9LEo9wkSkbNZkb?=
+ =?us-ascii?Q?noFAka9fCPCihN5RWty59hQ0EQnDPLs+wwNbT5afMIEI8LeIeo91CK5rNfx6?=
+ =?us-ascii?Q?DZQrYvDsV6oejiaWqACbSoRykbFa2IUTewwAh5H68JVSmWUHw114+MQ4H6aO?=
+ =?us-ascii?Q?HlUqidQH5QJBSs4M/jbUtHk1RWLAi1fXPPfZqOSn8L+ax103MGK6zGUhFzkh?=
+ =?us-ascii?Q?uG1GDdgyRQ6ATyyz+4r+ZrQ0dxb13uFEuLD1vZQJWLYYcs/x95ghniIZJQTU?=
+ =?us-ascii?Q?5NraiKm05ApQxFUa5jhoQklbtvVHt9WkG9gd+gQCwyhk59Paz6C/F+Kag1xv?=
+ =?us-ascii?Q?RtlnrT0j98/JHs+oC8cPbWXptqb1pXf0QQvcie2YQ245KCOs4E6GnroOuWXY?=
+ =?us-ascii?Q?lFJypuDDXCtR+/wmABGNKoQPApLlZ8OJqD4Hu4RCik0uNJWBdWgsQj8gXGDB?=
+ =?us-ascii?Q?vidC?=
