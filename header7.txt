@@ -1,0 +1,174 @@
+Received: from DB9P194MB1779.EURP194.PROD.OUTLOOK.COM (2603:10a6:10:392::14)
+ by PAWP194MB2202.EURP194.PROD.OUTLOOK.COM with HTTPS; Sat, 2 Dec 2023
+ 17:04:39 +0000
+Received: from ZR2P278CA0089.CHEP278.PROD.OUTLOOK.COM (2603:10a6:910:65::20)
+ by DB9P194MB1779.EURP194.PROD.OUTLOOK.COM (2603:10a6:10:392::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.27; Sat, 2 Dec
+ 2023 17:04:39 +0000
+Received: from VE1EUR01FT092.eop-EUR01.prod.protection.outlook.com
+ (2603:10a6:910:65:cafe::ec) by ZR2P278CA0089.outlook.office365.com
+ (2603:10a6:910:65::20) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.29 via Frontend
+ Transport; Sat, 2 Dec 2023 17:04:38 +0000
+Authentication-Results: spf=pass (sender IP is 104.47.18.105)
+ smtp.mailfrom=outlook.fr; dkim=pass (signature was verified)
+ header.d=googlemail.com;dmarc=pass action=none
+ header.from=googlemail.com;compauth=pass reason=100
+Received-SPF: Pass (protection.outlook.com: domain of outlook.fr designates
+ 104.47.18.105 as permitted sender) receiver=protection.outlook.com;
+ client-ip=104.47.18.105; helo=EUR05-AM6-obe.outbound.protection.outlook.com;
+ pr=C
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (104.47.18.105)
+ by VE1EUR01FT092.mail.protection.outlook.com (10.152.3.140) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7046.24 via Frontend Transport; Sat, 2 Dec 2023 17:04:38 +0000
+X-IncomingTopHeaderMarker:
+ OriginalChecksum:94A291F0163D8992CA5F82ECB7B8B0C26E8ACA33B17FE17805F40CBBB87E3647;UpperCasedChecksum:17866ACAD8ED78DE7A9D45A789C6F9481EE6AC31C41DB06E6CAD1DB40E21509D;SizeAsReceived:5069;Count:45
+Received: from PAWP194MB2202.EURP194.PROD.OUTLOOK.COM (2603:10a6:102:34e::6)
+ by AM8P194MB0978.EURP194.PROD.OUTLOOK.COM (2603:10a6:20b:241::11) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7046.30; Sat, 2 Dec
+ 2023 17:04:38 +0000
+Resent-From: <arthur.minasyan@outlook.fr>
+Received: from PAWP194MB2202.EURP194.PROD.OUTLOOK.COM ([::1]) by
+ PAWP194MB2202.EURP194.PROD.OUTLOOK.COM ([fe80::f24d:b1da:e2b9:872e%3]) with
+ Microsoft SMTP Server id 15.20.7046.027; Sat, 2 Dec 2023 17:04:37 +0000
+Authentication-Results-Original: spf=pass (sender IP is 209.85.161.47)
+ smtp.mailfrom=googlemail.com; dkim=pass (signature was verified)
+ header.d=googlemail.com;dmarc=pass action=none
+ header.from=googlemail.com;compauth=pass reason=100
+Received-SPF: Pass (protection.outlook.com: domain of googlemail.com
+ designates 209.85.161.47 as permitted sender)
+ receiver=protection.outlook.com; client-ip=209.85.161.47;
+ helo=mail-oo1-f47.google.com; pr=C
+X-IncomingTopHeaderMarker:
+ OriginalChecksum:95805F195FEA58F2EB8A67DF7A51F0A95791345F02A3D450E8174C35DF246907;UpperCasedChecksum:431C6D18BE26552039748DEDCCA7E2C2B0D9B55956CEFD8FA951AC83D73202C8;SizeAsReceived:2607;Count:15
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20230601; t=1701536675; x=1702141475; darn=outlook.fr;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=ApJqjUpgOjDNy25c52nQtrGFBqyMfDZxIUoWBF4xcoA=;
+        b=gwQQAi2lqFHspDvl6G8jytM7lbZ+3BdG+gwKHljCVNQoM7L0VUDQgSLW1PhvUkVD/P
+         NS73eLDvlUuZzhduRTSOrq8GtoNZmTtJtRrmibnktX07B+0NkNHaFQSFFO4q2w7wbW3K
+         YUoRPkDYyVyLb3sb0pl7T+C5YxIl5SpPZOqn0NW0eZ7CjOx0n7OnriNfIHuPuLLN+L9C
+         SlsyJkNzmbv5HI8vZc9reM0XzmvBIAn/4EXzpCfjh14t69MmEZoIOLOaye9BN0KND8A+
+         I8oh898+9M+IeV/eBPPrm4qwocgvuonfHI+xmqfS0ZoKfYd7hf01uo1W/d7rmBugnajm
+         3eFw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1701536675; x=1702141475;
+        h=to:subject:message-id:date:from:in-reply-to:references:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=ApJqjUpgOjDNy25c52nQtrGFBqyMfDZxIUoWBF4xcoA=;
+        b=Psm1hYXJI5KO6VOQClA4EHGGBXyCTPNuVs6Pz17hKsvBCPDGGL1BnggzWLFghHytp0
+         4BQlAHNHQ71SvJIfPUESRsuBd5WssQ4UeCbtl5YjtHBobKRfZTJEweVwer38z0NQqAAz
+         906Ke5ivUJPqZAr7dAlxD3bsWTtuDgDTpqhS9K+1GLGLGXhNm8RxPYA2lqCoG0rb4MKp
+         yit3beDvAu8vmbjbXYehVHbR6eCRkMvUXZXxtz6tF7Ksmc4Szj/Ej+MUyl2mwl/DNWVj
+         P490FAedoq2PAVtdQ4TIcuhOriRy5DCjiklOo8bUMq3VZZZeVJPOYu3k9MVviK+XVRWv
+         JHSA==
+X-Gm-Message-State: AOJu0Yxtwelgt9EmwmYYXyLnAWznvphoWOZogpJqZYTf56COOhvk3Hb9
+	56FbzyJ9BcLSRcamA0zr3lomNMVvG301WZOw//gfMzk5eRU=
+X-Google-Smtp-Source: AGHT+IGrtneTqR8+RG1VOOnw3k5VI5H6ByU0ZKZEKeQf46dQoKtdlk8Zz9WP80/QOQSqDpyCPioikZX2GPkKJlnBtnE=
+X-Received: by 2002:a05:6870:330a:b0:1fb:75c:3fe7 with SMTP id
+ x10-20020a056870330a00b001fb075c3fe7mr2056566oae.71.1701536675144; Sat, 02
+ Dec 2023 09:04:35 -0800 (PST)
+MIME-Version: 1.0
+References: <PAWP194MB2202E61438D906EFC414D2EE8180A@PAWP194MB2202.EURP194.PROD.OUTLOOK.COM>
+In-Reply-To: <PAWP194MB2202E61438D906EFC414D2EE8180A@PAWP194MB2202.EURP194.PROD.OUTLOOK.COM>
+From: Cyril Somkine <cyrilsomkine@googlemail.com>
+Date: Sat, 2 Dec 2023 18:04:24 +0100
+Message-ID: <CAM=nFRL+_o9t+HHopmH1gUp7JWhX97utwDdwycp_=f00aG11_g@mail.gmail.com>
+Subject: Re: test
+To: Arthur Minasyan <arthur.minasyan@outlook.fr>
+Content-Type: multipart/alternative; boundary="000000000000182983060b89e1e2"
+X-IncomingHeaderCount: 15
+Return-Path:
+ arthur.minasyan+SRS=h7AFf=HN=googlemail.com=cyrilsomkine@outlook.fr
+X-EOPAttributedMessage: 1
+X-EOPTenantAttributedMessage: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa:1
+X-MS-TrafficTypeDiagnostic:
+ VI1EUR04FT061:EE_|DB5P194MB2134:EE_|PAWP194MB2202:EE_|AM8P194MB0978:EE_|VE1EUR01FT092:EE_|DB9P194MB1779:EE_|PAWP194MB2202:EE_
+X-MS-UserLastLogonTime: 12/2/2023 5:03:28 PM
+X-MS-Office365-Filtering-Correlation-Id: 12dfc6b2-121c-4c0b-0da7-08dbf358c4ae
+X-Microsoft-Antispam-Untrusted: BCL:0;
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB5P194MB2134
+X-MS-Exchange-Transport-EndToEndLatency: 00:00:01.3280066
+X-MS-Exchange-Processed-By-BccFoldering: 15.20.7046.027
+X-MS-Exchange-Inbox-Rules-Loop: arthur.minasyan@outlook.fr
+X-IncomingHeaderCount: 45
+X-MS-Exchange-Organization-ExpirationStartTime: 02 Dec 2023 17:04:38.5469
+ (UTC)
+X-MS-Exchange-Organization-ExpirationStartTimeReason: OriginalSubmit
+X-MS-Exchange-Organization-ExpirationInterval: 1:00:00:00.0000000
+X-MS-Exchange-Organization-ExpirationIntervalReason: OriginalSubmit
+X-MS-Exchange-Organization-Network-Message-Id:
+ 12dfc6b2-121c-4c0b-0da7-08dbf358c4ae
+X-MS-Exchange-Organization-MessageDirectionality: Incoming
+X-MS-Exchange-Transport-CrossTenantHeadersStripped:
+ VE1EUR01FT092.eop-EUR01.prod.protection.outlook.com
+X-MS-Exchange-Transport-CrossTenantHeadersPromoted:
+ VE1EUR01FT092.eop-EUR01.prod.protection.outlook.com
+X-MS-PublicTrafficType: Email
+X-MS-Exchange-Organization-AuthSource:
+ VE1EUR01FT092.eop-EUR01.prod.protection.outlook.com
+X-MS-Exchange-Organization-AuthAs: Anonymous
+X-MS-Office365-Filtering-Correlation-Id-Prvs:
+ bfedf2d8-0a1b-4443-c331-08dbf358c393
+X-MS-Exchange-EOPDirect: true
+X-Sender-IP: 104.47.18.105
+X-SID-PRA: CYRILSOMKINE@GOOGLEMAIL.COM
+X-SID-Result: PASS
+X-MS-Exchange-Organization-PCL: 2
+X-Microsoft-Antispam: BCL:0;
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 02 Dec 2023 17:04:38.5001
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 12dfc6b2-121c-4c0b-0da7-08dbf358c4ae
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-AuthSource:
+ VE1EUR01FT092.eop-EUR01.prod.protection.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: Internet
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DB9P194MB1779
+X-MS-Exchange-Processed-By-BccFoldering: 15.20.7046.027
+X-MS-Exchange-Organization-SCL: -1
+X-Message-Info:
+	qZelhIiYnPmVTGpQXLLoyyMgOSjunl7cSgXBcc7jD/XbefCXH5Nuv4nRwJ7ZlNFSXDzv23WhiTFAPCo2+zAllElyenG/rYdpPEg42w8L1TlhLfceC7GCKLqn8Va0MdEkWWVCyZRWTVfnYzI4xpa8xAeaHV0JTTh2QZC1DueMdxCAUa+oGU+LFLT8yrsGQpO6B0J+Iha2lak=
+X-Message-Delivery: Vj0xLjE7dXM9MDtsPTA7YT0xO0Q9MTtHRD0xO1NDTD0tMQ==
+X-Microsoft-Antispam-Mailbox-Delivery:
+	ucf:0;jmr:0;ex:0;auth:1;dest:I;OFR:SpamFilterPass;ENG:(5062000305)(920221119095)(90000117)(920221120095)(90005022)(91005020)(91035115)(9050020)(9100341)(1010050)(944500132)(2008001134)(2008121020)(4810010)(4910033)(9920006)(9510006)(10105021)(9320005)(9230038)(120001);
+X-Microsoft-Antispam-Message-Info:
+	=?us-ascii?Q?4vdOQVkkqf4q+6zeSyBjQFpZWg70FIy/w/6hl6IawhqGJFKw4zZB53ZGKVRZ?=
+ =?us-ascii?Q?U/iPSVoWvysMfv/lbaPeFXkdN0/DrtwqLr3JYkeRha6eq2kOcAia1OYWsyA/?=
+ =?us-ascii?Q?MraSvm5XjCWZZi/PUL+yeM16jKoJWfNSc01vorM6U1wR+BaASom/Tusky5BO?=
+ =?us-ascii?Q?cHcaXXf2khY1i+UibeVQwy6OEC+p71MoD7mK2OpR408TPXi5Ojz+HG7T98cn?=
+ =?us-ascii?Q?ePNJwPv1r0Nfzf0Ui6J75KI6JpP9JVGeHt2i6pZqB+DTK+Vw8ZNRkQ6ZXHBN?=
+ =?us-ascii?Q?TErNmQ3IOMIliS/ipXE4c90MQrgYZ6EWUwKl75Uls1d0cCgj5WkQnbs/1BoZ?=
+ =?us-ascii?Q?S+Xq0wAWUAvZWxU4tgkSj2iWEYfpwOCLlNA+ZIJnu1avfk1hUkL72z2VAySc?=
+ =?us-ascii?Q?vplcI8Pr86vAGX91f5X37+Ol+8FrdeDwHqLLCjJFpATuk9V8maRG1batwK5Q?=
+ =?us-ascii?Q?kZ7aXnMWxQ859N0CnqVfPgyf6mVHpr9YBxRbjmlXYEoAoUZbZKTsVYwW29iu?=
+ =?us-ascii?Q?EE7LMsMLfYa26fLbTbbH85xeriKtJu+3NPivlg6hr7hrit3M0ueggzKua84Y?=
+ =?us-ascii?Q?XJXr67uDYcszU7EffDGWrM0aOlvzZZYhKQlQzk6A+dE6Z0a4jm/DcVl3MoPz?=
+ =?us-ascii?Q?P0u/AI+lZGbQ5R2B2S9YTEpZuUCt6LhcEkYU30S81Dqt1tUVY/rwPjvoPzcL?=
+ =?us-ascii?Q?pfu3ZZa3+aA7tbxtGCvRkMwOHCtqkN22xq9c+tnQeDMJer0fWPGIGWKfjGOM?=
+ =?us-ascii?Q?cUCnWutgnMuRS91UOIsk3Fvgqxt/ZhxRCzjWgiBAsrRX9P9CKDmhF46Q/CbE?=
+ =?us-ascii?Q?8So/vv3bWlOG2MbZ3BPqpxQxgbhCgm6FjocQHRnXhPcSzSH87DUtnrXLTnrz?=
+ =?us-ascii?Q?p1FgKCShGjGhR3E9IZnpTiETaZwJyCrOB0XC3EJNDap7AQxJUqzrLOXBAs4X?=
+ =?us-ascii?Q?XA9usf4aclHvsk90KgLLhEnSOH7PQIrPykMOVRb7YryD6f+lsBu2VkhlXeDF?=
+ =?us-ascii?Q?6fQHYbMch0gAqGFOs7v2qXg5K7PH9q2xyGQ083pErTokiOZeV76C9gldls1K?=
+ =?us-ascii?Q?ygoDgU23QKa+OXZccvCjrrwdoDbm4JTTdzTXoWJhKLW8P9NVxLcGCFI2HZvW?=
+ =?us-ascii?Q?qVuZ6BpGKYT4fReCPCzuogzD7RzPmAvY1TVT6XXFJsBmk1i81kKCzQQSK3Xb?=
+ =?us-ascii?Q?XvdmHK1zkajCh8C+Tb+7x8JJB8IH/WEtyWtAD8Gw9acbFwL1AtJnsEpGCt6t?=
+ =?us-ascii?Q?CssSUoTvuKs2NwY7UY+y73g3QxcC2maWU9l2oPAbwARtETBJxdoeSgIE2OkF?=
+ =?us-ascii?Q?V9KHdEKoqjKmUejGIoLWgoZmndM5FbZk/K9tVZmLl8gIhRh365b7REUB3dEG?=
+ =?us-ascii?Q?qZtqRVDZW/TGUI1yD2iCDKDvL9mfwZDirHwavf13kXYpig/ZiWy7rwJ4phvr?=
+ =?us-ascii?Q?U7Gg+g4ZOFvI4CGDRSOwgJ60PgXwe/rxAd1C81tJwJpw26K4YqwGtcQyVSlv?=
+ =?us-ascii?Q?CtVGem+D5VyPLIGBcnDg/2uLiM64jTkbTavZvgiFQOP18V5iDEerDlBAvHLv?=
+ =?us-ascii?Q?IPU4M52wTY2NtilV/Tyfbd4TZLXwt9ZyVANOi9OxdhHZPJxu3fCXP6JI+fEf?=
+ =?us-ascii?Q?e9E7VBs0jHDSgkOCEC+cSxQOh7YbQYx6se+ox0nL2K2DQzB9p8SOJUxvfOew?=
+ =?us-ascii?Q?YRE1fz1syMlT1DweU8Hv+FKRRTJTpqLYZf5xJktN/KVAiRThxCvn1R3KYy06?=
+ =?us-ascii?Q?2a77j2lPUVh0S6OGE83nO0X3SdZOYDoEY6RGOPeDwN4x7tHX7p2GsKkHW34f?=
+ =?us-ascii?Q?HQKS0+TQiQ7RTP0ZRrJzCsILtJ6LyW5oP2DVyhEfxH732dVwb5ijkGCAvriG?=
+ =?us-ascii?Q?ZWdlucNE6LwjuQUOxZGg8Ig2txPHW6ATpiTsuIktY53JRWvKGulMfaGOVpwh?=
+ =?us-ascii?Q?2SszxvTUdf4vYgYtYMcUwB6m/Pp1Ri6F2OhyXY7GVJmi26te7xRUAjkfD+Lj?=
+ =?us-ascii?Q?iSKX?=
