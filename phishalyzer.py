@@ -31,11 +31,15 @@ def routing(eHeader):
         print(f'{Fore.RED}File not found.{Fore.RESET}')
         sys.exit(1)
 
+
     header = ''.join(tmp).lower()
     routing = []
 
     receivedMatch = re.findall(r'received: from ([\w\-.:]+)', header)
-    byMatch = re.findall(r'by ([\w\-.:]+)', header)
+    
+    for countReceived in enumerate(reversed(receivedMatch), start=1):
+        byMatch = re.findall(r'by ([\w\-.:]+)', header)
+    
     withMatch = re.findall(r'with ([\w\-.:]+)', header)
 
 
@@ -223,18 +227,16 @@ def spoofing(eheader):
     print(f'\n{Fore.LIGHTBLUE_EX}Phishing Check: {Fore.RESET}')
     
     fromMatch = re.search(r'<(.*)>', content['from'])
-   
-    #print(content['Received: from'])
-
+    
     if fromMatch.group(1) is not None and content['reply-to'] is not None:
         if content['from'] != content['reply-to']:
-            print(f'{Fore.LIGHTYELLOW_EX}Suspicous activity detected: FROM Field({fromMatch.group(1)}) NOT EQUAL REPLY-TO Field ({content["reply-to"]}){Fore.RESET}')
+            print(f'{Fore.LIGHTYELLOW_EX}Suspicous activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "REPLY-TO" Field ({content["reply-to"]}){Fore.RESET}')
         else:
             pass
 
     if fromMatch.group(1) is not None and content['return-path'] is not None:
         if fromMatch.group(1) != content['return-path']:
-            print(f'{Fore.LIGHTYELLOW_EX}Suspicous activity detected: FROM Field({fromMatch.group(1)}) NOT EQUAL RETURN-PATH Field ({content["return-path"]}){Fore.RESET}')
+            print(f'{Fore.LIGHTYELLOW_EX}Suspicous activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "RETURN-PATH" Field ({content["return-path"]}){Fore.RESET}')
         else:
             pass
        
@@ -253,10 +255,10 @@ def main():
     if args.file is not None and args.analyze is not None:
         print(f'{Fore.YELLOW}\nE-Mail Header Analyse complete{Fore.RESET}')
         
-        geeneralInformation(args.file)
+        #geeneralInformation(args.file)
         routing(args.file)
-        securityInformations(args.file)
-        envelope(args.file)
+        #securityInformations(args.file)
+        #envelope(args.file)
         spoofing(args.file)
         #print(getFile(args.file))
         #print(resolveIP('mail-oa1-f45.google.com'.lower()))
