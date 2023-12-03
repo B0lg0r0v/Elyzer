@@ -308,10 +308,10 @@ def spoofing(eheader):
         if ipv4[0] in aRecordsOfMx:
             print(f'{Fore.LIGHTGREEN_EX}No Mismatch detected.{Fore.RESET}')
         else:
-            print(f'{Fore.LIGHTRED_EX}POTENTIAL SPOOFING DETECTED. INCORRECT SMTP SERVER DETECTED. SENDER SMTP IS "{fromEmailDomain} [{"".join(ipv4[0])}]" AND SHOULD BE "{fromEmailDomain} [{"".join(aRecordsOfMx)}]" <- (CURRENT MX RECORD FOR THIS DOMAIN) {Fore.RESET}')
+            print(f'{Fore.LIGHTYELLOW_EX}POTENTIAL SPOOFING DETECTED. INCORRECT SMTP SERVER DETECTED. SENDER SMTP IS "{fromEmailDomain} [{"".join(ipv4[0])}]" AND SHOULD BE "{fromEmailDomain} [{"".join(aRecordsOfMx)}]" <- (CURRENT MX RECORD FOR THIS DOMAIN) {Fore.RESET}')
 
     else:
-        print(f'{Fore.LIGHTYELLOW_EX}Could not detect SMTP Server. Manual reviewing required.{Fore.RESET}')
+        print(f'{Fore.WHITE}Could not detect SMTP Server. Manual reviewing required.{Fore.RESET}')
 
     print(f'\n{Fore.LIGHTMAGENTA_EX}Checking for Field Mismatches...{Fore.RESET}')
 
@@ -346,7 +346,7 @@ def spoofing(eheader):
         print(f'Votes: {Fore.LIGHTGREEN_EX}https://www.virustotal.com/gui/ip-address/{ipv4[0]}/votes{Fore.RESET}')
 
     else:
-        print(f'{Fore.LIGHTYELLOW_EX}Could not detect SMTP Server. Manual reviewing required.{Fore.RESET}')
+        print(f'{Fore.WHITE}Could not detect SMTP Server. Manual reviewing required.{Fore.RESET}')
 
     #------------------------Check with AbuseIPDB------------------------#
 
@@ -359,7 +359,7 @@ def spoofing(eheader):
         print(f'AbuseIPDB: {Fore.LIGHTGREEN_EX}https://www.abuseipdb.com/check/{ipv4[0]}{Fore.RESET}')
         
     else:
-        print(f'{Fore.LIGHTYELLOW_EX}Could not detect SMTP Server. Manual reviewing required.{Fore.RESET}')
+        print(f'{Fore.WHITE}Could not detect SMTP Server. Manual reviewing required.{Fore.RESET}')
 
     #------------------------Check with IPQualityScore------------------------#
 
@@ -372,14 +372,12 @@ def spoofing(eheader):
         print(f'IPQualityScore: {Fore.LIGHTGREEN_EX}https://www.ipqualityscore.com/free-ip-lookup-proxy-vpn-test/lookup/{ipv4[0]}{Fore.RESET}')
 
     else:
-        print(f'{Fore.LIGHTYELLOW_EX}Could not detect SMTP Server. Manual reviewing required.{Fore.RESET}')
+        print(f'{Fore.WHITE}Could not detect SMTP Server. Manual reviewing required.{Fore.RESET}')
 
     
 
 if __name__ == '__main__':
-    colorama_init()
 
-    print("\n")
     print(r"""
           
    ____ ____  __ ____   ____ ___ 
@@ -393,14 +391,14 @@ if __name__ == '__main__':
     """)
     print("\n")
 
+    colorama_init() #initialize colorama
 
     parser = ArgumentParser() #Create the Parser.
-    parser.add_argument('-f', '--file')
-    parser.add_argument('-a', '--analyze', action='store_true')
-
+    parser.add_argument('-f', '--file', help='give the E-Mail Header as a file.', required=True)
+    parser.add_argument('-v', '--version', action='version', version='Elyzer v0.1')
     args = parser.parse_args() #initialize the Parser.
 
-    if args.file is not None and args.analyze is not None:
+    if args.file is not None:  
         print(f'{Fore.YELLOW}E-Mail Header Analyse complete{Fore.RESET}')
 
         geeneralInformation(args.file)
