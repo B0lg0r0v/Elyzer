@@ -40,7 +40,7 @@ pip3 install -r requirements.txt
 ## Usage
 Using Elyzer is quite intuitive. Give with the *-f* argument the header file.
 
-<img width="600" alt="grafik" src="https://github.com/B0lg0r0v/Elyzer/assets/115954804/51604b14-cb72-4179-bc34-3996a5ad7ce8">
+<img width="600" alt="grafik" src="https://github.com/B0lg0r0v/Elyzer/assets/115954804/8f6eb75c-934d-4aee-b508-c41021bd33db">
 
 ## Features
 Here's a quick overview of Elyzer's features:
