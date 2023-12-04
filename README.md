@@ -43,7 +43,7 @@ Here's a quick overview of Elyzer's features:
  - Print security headers and check if set correctly
  - Print interesting headers such as "Envelope-From"
  - Print MS-Exchange Headers
- - Spoofing / Phishing analzyer
+ - Spoofing / Phishing analyzer
 
 
  
