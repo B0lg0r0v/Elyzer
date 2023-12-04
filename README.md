@@ -51,7 +51,7 @@ Here's a quick overview of Elyzer's features:
  - Print MS-Exchange Headers
  - Spoofing / Phishing analyzer
 
-*Spoofing / Phsishing detection feature:*
+*Spoofing / Phishing detection feature:*
 <p align="center">
  <img width="1000" alt="grafik" src="https://github.com/B0lg0r0v/Elyzer/assets/115954804/d275fa27-7b63-4797-ad62-7e6e0386e666">
 </p>
