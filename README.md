@@ -60,5 +60,5 @@ Here's a quick overview of Elyzer's features:
 Credits for the *getReceivedFields* & the *getFields* functions goes to "spcnvdr" <spcnvdrr@protonmail.com>, Copyright 2020.
 
 ## Disclaimer
-This tool is primarly created for me as a project to enhance my coding skills and start creating some hacking tools. It is not considered to be the most efficient tool out there.
+This tool is primarly created for me as a project to enhance my coding skills and start creating some red team / blue team tools. It is not considered to be the most efficient tool out there.
 
