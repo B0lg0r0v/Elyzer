@@ -8,6 +8,8 @@
   * [Installation](#installation)
   * [Usage](#usage)
   * [Features](#features)
+  * [Notes](#notes)
+  * [Disclaimer](#disclaimer)
 
 ## Description
 
@@ -45,5 +47,14 @@ Here's a quick overview of Elyzer's features:
  - Print MS-Exchange Headers
  - Spoofing / Phishing analyzer
 
+*Spoofing / Phsishing detection feature:*
+<p align="center">
+ <img width="1000" alt="grafik" src="https://github.com/B0lg0r0v/Elyzer/assets/115954804/d275fa27-7b63-4797-ad62-7e6e0386e666">
+</p>
 
- 
+## Notes
+Credits for the *getReceivedFields* & the *getFields* functions to Copyright 2020 spcnvdr <spcnvdrr@protonmail.com>
+
+## Disclaimer
+This tool is primarly created for me as a project to enhance my coding skills and start creating some hacking tools. It is not considered to be the most efficient tool out there.
+
