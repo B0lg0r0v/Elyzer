@@ -57,7 +57,7 @@ Here's a quick overview of Elyzer's features:
 </p>
 
 ## Notes
-Credits for the *getReceivedFields* & the *getFields* functions to Copyright 2020 spcnvdr <spcnvdrr@protonmail.com>
+Credits for the *getReceivedFields* & the *getFields* functions goes to Copyright 2020 spcnvdr <spcnvdrr@protonmail.com>
 
 ## Disclaimer
 This tool is primarly created for me as a project to enhance my coding skills and start creating some hacking tools. It is not considered to be the most efficient tool out there.
