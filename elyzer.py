@@ -3,7 +3,6 @@ from argparse import ArgumentParser
 import re
 from colorama import init as colorama_init
 from colorama import Fore
-from colorama import Style
 import dns.resolver
 import os
 from datetime import datetime
@@ -69,7 +68,7 @@ def resolveIP(domain):
             for resolved4 in resolve4:
                 return f'{resolved4}'
     except:
-        return f'{Fore.LIGHTRED_EX}(No IP){Fore.RESET}'
+        return f'{Fore.LIGHTRED_EX}Error.{Fore.RESET}'
     
 #------------------------Routing Information & Timestamps------------------------#
 def routing(eHeader):
@@ -102,7 +101,6 @@ def routing(eHeader):
     routing.append(f'\nTimestamps between Hops:')
 
     dateCounter = 1 #separate counter for the hops in the timestamps
-    #previousDate = None
 
     for x in reversed(getReceivedFields(eHeader)):
         dateMatch1 = re.findall(r'\S{3},[ ]{0,4} \d{1,2} \S{3} \d{1,4} \d{2}:\d{2}:\d{2} [+-]\d{4}', x ,re.IGNORECASE)
@@ -165,6 +163,27 @@ def securityInformations(eheader):
 
     print(f'\n{Fore.LIGHTBLUE_EX}Security Informations: {Fore.RESET}')
 
+    if content['received-spf'] is not None:
+        if 'fail' in content['received-spf'].lower():
+            print(f'Received SPF: {Fore.LIGHTRED_EX}{content["received-spf"]}{Fore.RESET}')
+        else:
+            print(f'Received SPF: {Fore.GREEN}{content["received-spf"]}{Fore.RESET}')
+    else:
+        print(f'Received SPF: {Fore.LIGHTRED_EX}No Received SPF{Fore.RESET}')
+
+
+    if content['dkim-signature'] is not None:
+        print(f'DKIM Signature: {Fore.GREEN}{content["dkim-signature"]}{Fore.RESET}')
+    else:
+        print(f'DKIM Signature: {Fore.LIGHTRED_EX}No DKIM Signature{Fore.RESET}')
+    
+
+    if content['dmarc'] is not None:
+        print(f'DMARC: {Fore.GREEN}{content["dmarc"]}{Fore.RESET}')
+    else:
+        print(f'DMARC: {Fore.LIGHTRED_EX}No DMARC{Fore.RESET}')
+    
+
     if content['authentication-results'] is not None:
         
         if 'spf=fail' in content['authentication-results'].lower():
@@ -175,29 +194,17 @@ def securityInformations(eheader):
     else:
         print(f'Authentication Results: {Fore.LIGHTRED_EX}No Authentication Results{Fore.RESET}')
 
-
-    if content['dkim-signature'] is not None:
-        print(f'DKIM Signature: {Fore.GREEN}{content["dkim-signature"]}{Fore.RESET}')
-    else:
-        print(f'DKIM Signature: {Fore.LIGHTRED_EX}No DKIM Signature{Fore.RESET}')
-    
-    if content['received-spf'] is not None:
-        if 'fail' in content['received-spf'].lower():
-            print(f'Received SPF: {Fore.LIGHTRED_EX}{content["received-spf"]}{Fore.RESET}')
-        else:
-            print(f'Received SPF: {Fore.GREEN}{content["received-spf"]}{Fore.RESET}')
-    else:
-        print(f'Received SPF: {Fore.LIGHTRED_EX}No Received SPF{Fore.RESET}')
     
     if content['x-forefront-antispam-report'] is not None:
         print(f'X-Forefront-Antispam-Report: {Fore.GREEN}{content["x-forefront-antispam-report"]}{Fore.RESET}')
     else:
         print(f'X-Forefront-Antispam-Report: {Fore.LIGHTRED_EX}No X-Forefront-Antispam-Report{Fore.RESET}')
-    
-    if content['dmarc'] is not None:
-        print(f'DMARC: {Fore.GREEN}{content["dmarc"]}{Fore.RESET}')
+
+
+    if content['x-microsoft-antispam'] is not None:
+        print(f'X-Microsoft-Antispam: {Fore.GREEN}{content["x-microsoft-antispam"]}{Fore.RESET}')
     else:
-        print(f'DMARC: {Fore.LIGHTRED_EX}No DMARC{Fore.RESET}')
+        print(f'X-Microsoft-Antispam: {Fore.LIGHTRED_EX}No X-Microsoft-Antispam{Fore.RESET}')
 
 
 def envelope(eheader):
@@ -269,6 +276,8 @@ def envelope(eheader):
     
     print(f'{Fore.CYAN}\n<-------------------------------------------------->\n{Fore.RESET}')
 
+
+
 def spoofing(eheader):
     try:
         with open(eheader, 'r', encoding='UTF-8') as header:
@@ -283,7 +292,22 @@ def spoofing(eheader):
 
     x = next(iter(reversed(getReceivedFields(eheader))), None)
     ipv4 = re.findall(r'[\[\(](\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})[\]\)]', x, re.IGNORECASE)
+    
+    
+    formatReturnPath = False
+    formatReplyTo = False
+    
+ 
     fromMatch = re.search(r'<(.*)>', content['from'])
+    if content['return-path'] is not None:
+        if '<' in content['return-path']:
+            returnToPath = re.search(r'<(.*?)>', content['return-path'])
+            formatReturnPath = True
+    if content['reply-to'] is not None:
+        if '<' in content['reply-to']:
+            replyTo = re.search(r'<(.*)>', content['reply-to'])
+            formatReplyTo = True
+
 
     #------------------------check for spoofing------------------------#
     mx = []
@@ -292,42 +316,71 @@ def spoofing(eheader):
     # Getting the Domain Name from the "From" Field
     fromEmailDomain = fromMatch.group(1).split('@')[1]
     # Getting the MX Records from the Domain Name
-    getMx = dns.resolver.resolve(fromEmailDomain, 'MX')
-    for servers in getMx:
-        mx.append(servers.exchange.to_text().lower())
+    try:
+        getMx = dns.resolver.resolve(fromEmailDomain, 'MX')
+        for servers in getMx:
+            mx.append(servers.exchange.to_text().lower())
 
+    except dns.resolver.LifetimeTimeout:
+        print(f'{Fore.LIGHTRED_EX}Could not resolve the MX Record.{Fore.RESET}')
     # Resolving the A Records from the MX Records
     for servers in mx:
         aRecordsOfMx.append(resolveIP(servers))
 
     
-    
-    print(f'\n{Fore.LIGHTMAGENTA_EX}Checking for SMTP Mismatch...{Fore.RESET}')
-    #print(aRecords)
+    print(f'\n{Fore.LIGHTMAGENTA_EX}Checking for SMTP Server Mismatch...{Fore.RESET}')
+
     if ipv4:
         if ipv4[0] in aRecordsOfMx:
             print(f'{Fore.LIGHTGREEN_EX}No Mismatch detected.{Fore.RESET}')
         else:
-            print(f'{Fore.LIGHTYELLOW_EX}POTENTIAL SPOOFING DETECTED. INCORRECT SMTP SERVER DETECTED. SENDER SMTP IS "{fromEmailDomain} [{"".join(ipv4[0])}]" AND SHOULD BE "{fromEmailDomain} [{"".join(aRecordsOfMx)}]" <- (CURRENT MX RECORD FOR THIS DOMAIN) {Fore.RESET}')
+            print(f'{Fore.LIGHTYELLOW_EX}SMTP Server Mismatch detected. Sender SMTP Server is "{fromEmailDomain} [{"".join(ipv4[0])}]" and should be "{fromEmailDomain} [{", ".join(aRecordsOfMx)}]" <- (current MX Record(s) for this domain.) {Fore.RESET}')
 
     else:
         print(f'{Fore.WHITE}Could not detect SMTP Server. Manual reviewing required.{Fore.RESET}')
 
     print(f'\n{Fore.LIGHTMAGENTA_EX}Checking for Field Mismatches...{Fore.RESET}')
 
-    
+
+    indent = ' ' * 3
     
     if fromMatch.group(1) is not None and content['reply-to'] is not None:
-        if content['from'] != content['reply-to']:
-            print(f'{Fore.LIGHTYELLOW_EX}Suspicous activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "REPLY-TO" Field ({content["reply-to"]}){Fore.RESET}')
-        else:
-            print(f'{Fore.LIGHTGREEN_EX}No "FROM - REPLY-TO" Mismatch detected.{Fore.RESET}')
+       
+        print(f'{Fore.LIGHTGREEN_EX}Reply-To Field detected{Fore.RESET}')
+        
+        if formatReplyTo == False:
+            if content['from'] != content['reply-to']:
+                print(f'{Fore.LIGHTYELLOW_EX}{indent}→ Suspicous activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "REPLY-TO" Field ({content["reply-to"]}){Fore.RESET}')
+            else:
+                print(f'{Fore.LIGHTGREEN_EX}{indent}→ No "FROM - REPLY-TO" Mismatch detected.{Fore.RESET}')
+
+        elif formatReplyTo == True:
+            if fromMatch.group(1) != replyTo.group(1):
+                print(f'{Fore.LIGHTYELLOW_EX}{indent}→ Suspicous activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "REPLY-TO" Field ({replyTo.group(1)}){Fore.RESET}')
+            else:
+                print(f'{Fore.LIGHTGREEN_EX}{indent}→ No "FROM - REPLY-TO" Mismatch detected.{Fore.RESET}')
+
+    else:
+        print(f'{Fore.WHITE}No Reply-To Field detected. Skipping...{Fore.RESET}')
 
     if fromMatch.group(1) is not None and content['return-path'] is not None:
-        if fromMatch.group(1) != content['return-path']:
-            print(f'{Fore.LIGHTYELLOW_EX}Suspicous activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "RETURN-PATH" Field ({content["return-path"]}){Fore.RESET}')
-        else:
-            print(f'{Fore.LIGHTGREEN_EX}No "FROM - RETURN-PATH" Mismatch detected.{Fore.RESET}')
+      
+        print(f'{Fore.LIGHTGREEN_EX}Return-Path Field detected{Fore.RESET}')
+      
+        if formatReturnPath == False:
+            if fromMatch.group(1) != content['return-path']:
+                print(f'{Fore.LIGHTYELLOW_EX}{indent}→ Suspicous activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "RETURN-PATH" Field ({content["return-path"]}){Fore.RESET}')
+            else:
+                print(f'{Fore.LIGHTGREEN_EX}{indent}→ No "FROM - RETURN-PATH" Mismatch detected.{Fore.RESET}')
+        
+        elif formatReturnPath == True:
+            if fromMatch.group(1) != returnToPath.group(1):
+                print(f'{Fore.LIGHTYELLOW_EX}{indent}→ Suspicous activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "RETURN-PATH" Field ({returnToPath.group(1)}){Fore.RESET}')
+            else:
+                print(f'{Fore.LIGHTGREEN_EX}{indent}→ No "FROM - RETURN-PATH" Mismatch detected.{Fore.RESET}')
+
+    else:
+        print(f'{Fore.WHITE}No Return-Path Field detected. Skipping...{Fore.RESET}')
        
     #------------------------Check with VirusTotal------------------------#
 
@@ -383,7 +436,7 @@ if __name__ == '__main__':
    ____ ____  __ ____   ____ ___ 
   / __// /\ \/ //_  /  / __// _ \
  / _/ / /__\  /  / /_ / _/ / , _/
-/___//____//_/  /___//___//_/|_| 
+/___//____//_/  /___//___//_/|_| v0.1
                                   
 
     Author: B0lg0r0v
