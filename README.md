@@ -1,5 +1,14 @@
 # Elyzer
 
+# Table of Contents
+
+- [Elyzer](#elyzer)
+  * [Description](#description)
+  * [General Informations](#general-informations)
+  * [Installation](#installation)
+  * [Usage](#usage)
+  * [Features](#features)
+
 ## Description
 
 Elyzer is a e-mail header analyzer tool which can detect potential spoofing attempts. It will give you general information, the route that the e-mail took, important security headers and the phishing / spoofing results. 
