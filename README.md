@@ -1,5 +1,9 @@
 # Elyzer
 
+<p align="center">
+<img width="450" alt="Capture d’écran 2023-12-04 à 14 32 41" src="https://github.com/B0lg0r0v/Elyzer/assets/115954804/b9c11fe1-72cd-4364-9dc8-c1adc0cc748d">
+</p>
+
 # Table of Contents
 
 - [Elyzer](#elyzer)
