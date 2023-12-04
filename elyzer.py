@@ -86,10 +86,6 @@ def routing(eHeader):
         byMatch = re.findall(r'by ([\w\-.:]+)', y, re.IGNORECASE)
         withMatch = re.findall(r'with ([\w\-.:]+)', y, re.IGNORECASE)
 
-        # regex for IPv4 and IPv6 in square brackets or parentheses
-        ipv4 = re.findall(r'[\[\(](\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})[\]\)]', y, re.IGNORECASE)
-        ipv6 = re.findall(r'[\[\(]([A-Fa-f0-9:]+)[\]\)]', y, re.IGNORECASE)
-
         counter += 1 
         if len(receivedMatch) != 0:
             print(f'Hop {counter} |↓|: FROM {Fore.GREEN}{receivedMatch[0].lower()}{Fore.RESET} TO {Fore.GREEN}{byMatch[0].lower()}{Fore.RESET} WITH {Fore.CYAN}{withMatch[0].lower()}{Fore.RESET}')
@@ -292,7 +288,7 @@ def spoofing(eheader):
 
     x = next(iter(reversed(getReceivedFields(eheader))), None)
     ipv4 = re.findall(r'[\[\(](\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})[\]\)]', x, re.IGNORECASE)
-    
+    ipv6 = re.findall(r'[\[\(]([A-Fa-f0-9:]+)[\]\)]', x, re.IGNORECASE)
     
     formatReturnPath = False
     formatReplyTo = False
@@ -323,10 +319,10 @@ def spoofing(eheader):
 
     except dns.resolver.LifetimeTimeout:
         print(f'{Fore.LIGHTRED_EX}Could not resolve the MX Record.{Fore.RESET}')
-    # Resolving the A Records from the MX Records
+    # Resolving the A Records from the MX Records  
     for servers in mx:
         aRecordsOfMx.append(resolveIP(servers))
-
+        
     
     print(f'\n{Fore.LIGHTMAGENTA_EX}Checking for SMTP Server Mismatch...{Fore.RESET}')
 
@@ -452,7 +448,7 @@ if __name__ == '__main__':
     args = parser.parse_args() #initialize the Parser.
 
     if args.file is not None:  
-        print(f'{Fore.YELLOW}E-Mail Header Analyse complete{Fore.RESET}')
+        print(f'{Fore.YELLOW}E-Mail Header Analysis complete{Fore.RESET}')
 
         geeneralInformation(args.file)
         routing(args.file)
