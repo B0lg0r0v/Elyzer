@@ -91,7 +91,7 @@ def routing(eHeader):
             print(f'Hop {counter} |↓|: FROM {Fore.GREEN}{receivedMatch[0].lower()}{Fore.RESET} TO {Fore.GREEN}{byMatch[0].lower()}{Fore.RESET} WITH {Fore.CYAN}{withMatch[0].lower()}{Fore.RESET}')
             routing.append(f'Hop {counter} |↓|: FROM {receivedMatch[0].lower()} TO {byMatch[0].lower()} WITH {withMatch[0].lower()}')
         else:
-            print('No match found')
+            print(f'{Fore.LIGHTYELLOW_EX}No match found for Hop {counter}{Fore.RESET}')
       
     print(f'\n{Fore.LIGHTBLUE_EX}Timestamps between Hops: {Fore.RESET}')
     routing.append(f'\nTimestamps between Hops:')
@@ -289,7 +289,9 @@ def spoofing(eheader):
     x = next(iter(reversed(getReceivedFields(eheader))), None)
     ipv4 = re.findall(r'[\[\(](\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})[\]\)]', x, re.IGNORECASE)
     ipv6 = re.findall(r'[\[\(]([A-Fa-f0-9:]+)[\]\)]', x, re.IGNORECASE)
-    
+    # get rid of the localhost IP Address
+    filteredIpv4 = [ip for ip in ipv4 if ip != '127.0.0.1']
+
     formatReturnPath = False
     formatReplyTo = False
     
@@ -326,11 +328,11 @@ def spoofing(eheader):
     
     print(f'\n{Fore.LIGHTMAGENTA_EX}Checking for SMTP Server Mismatch...{Fore.RESET}')
 
-    if ipv4:
-        if ipv4[0] in aRecordsOfMx:
+    if filteredIpv4:
+        if filteredIpv4[0] in aRecordsOfMx:
             print(f'{Fore.LIGHTGREEN_EX}No Mismatch detected.{Fore.RESET}')
         else:
-            print(f'{Fore.LIGHTYELLOW_EX}SMTP Server Mismatch detected. Sender SMTP Server is "{fromEmailDomain} [{"".join(ipv4[0])}]" and should be "{fromEmailDomain} [{", ".join(aRecordsOfMx)}]" <- (current MX Record(s) for this domain.) {Fore.RESET}')
+            print(f'{Fore.LIGHTYELLOW_EX}SMTP Server Mismatch detected. Sender SMTP Server is "{fromEmailDomain} [{"".join(filteredIpv4[0])}]" and should be "{fromEmailDomain} [{", ".join(aRecordsOfMx)}]" <- (current MX Record(s) for this domain.) {Fore.RESET}')
 
     else:
         print(f'{Fore.WHITE}Could not detect SMTP Server. Manual reviewing required.{Fore.RESET}')
@@ -382,17 +384,17 @@ def spoofing(eheader):
 
     print(f'\n{Fore.LIGHTMAGENTA_EX}Checking with VirusTotal...{Fore.RESET}')
 
-    if ipv4:
+    if filteredIpv4:
         # If you got an VT API Key, you can use it here. It will generate a report for the IP Address. Uncomment the line under this comment and replace <Your API KEY> with your API Key.
         #os.system(f'curl -s -X GET --header "x-apikey: <Your API KEY>" "https://www.virustotal.com/api/v3/ip_addresses/{ipv4[0]}" > vt.json')
         print(f'{Fore.LIGHTYELLOW_EX}Note: You can use your own VirusTotal API Key to generate a report for the IP Address. Check the Source Code.{Fore.RESET}\n')
-        print(f'Detections: {Fore.LIGHTGREEN_EX}https://www.virustotal.com/gui/ip-address/{ipv4[0]}/detection{Fore.RESET}')
-        print(f'Relations: {Fore.LIGHTGREEN_EX}https://www.virustotal.com/gui/ip-address/{ipv4[0]}/relations{Fore.RESET}')
-        print(f'Graph: {Fore.LIGHTGREEN_EX}https://www.virustotal.com/gui/ip-address/{ipv4[0]}/graph{Fore.RESET}')
-        print(f'Network Traffic: {Fore.LIGHTGREEN_EX}https://www.virustotal.com/gui/ip-address/{ipv4[0]}/network-traffic{Fore.RESET}')
-        print(f'WHOIS: {Fore.LIGHTGREEN_EX}https://www.virustotal.com/gui/ip-address/{ipv4[0]}/whois{Fore.RESET}')
-        print(f'Comments: {Fore.LIGHTGREEN_EX}https://www.virustotal.com/gui/ip-address/{ipv4[0]}/comments{Fore.RESET}')
-        print(f'Votes: {Fore.LIGHTGREEN_EX}https://www.virustotal.com/gui/ip-address/{ipv4[0]}/votes{Fore.RESET}')
+        print(f'Detections: {Fore.LIGHTGREEN_EX}https://www.virustotal.com/gui/ip-address/{filteredIpv4[0]}/detection{Fore.RESET}')
+        print(f'Relations: {Fore.LIGHTGREEN_EX}https://www.virustotal.com/gui/ip-address/{filteredIpv4[0]}/relations{Fore.RESET}')
+        print(f'Graph: {Fore.LIGHTGREEN_EX}https://www.virustotal.com/gui/ip-address/{filteredIpv4[0]}/graph{Fore.RESET}')
+        print(f'Network Traffic: {Fore.LIGHTGREEN_EX}https://www.virustotal.com/gui/ip-address/{filteredIpv4[0]}/network-traffic{Fore.RESET}')
+        print(f'WHOIS: {Fore.LIGHTGREEN_EX}https://www.virustotal.com/gui/ip-address/{filteredIpv4[0]}/whois{Fore.RESET}')
+        print(f'Comments: {Fore.LIGHTGREEN_EX}https://www.virustotal.com/gui/ip-address/{filteredIpv4[0]}/comments{Fore.RESET}')
+        print(f'Votes: {Fore.LIGHTGREEN_EX}https://www.virustotal.com/gui/ip-address/{filteredIpv4[0]}/votes{Fore.RESET}')
 
     else:
         print(f'{Fore.WHITE}Could not detect SMTP Server. Manual reviewing required.{Fore.RESET}')
@@ -401,11 +403,11 @@ def spoofing(eheader):
 
     print(f'\n{Fore.LIGHTMAGENTA_EX}Checking with AbuseIPDB...{Fore.RESET}')
 
-    if ipv4:
+    if filteredIpv4:
         # If you got an AbuseIPDB API Key, you can use it here. It will generate a report for the IP Address. Uncomment the line under this comment and replace <Your API KEY> with your API Key.
         #os.system(f'curl -s -X GET --header "Key: <Your API KEY>" "https://api.abuseipdb.com/api/v2/check?ipAddress={ipv4[0]}" > abuseipdb.json')
         print(f'{Fore.LIGHTYELLOW_EX}Note: You can use your own AbuseIPDB API Key to generate a report for the IP Address. Check the Source Code.{Fore.RESET}\n')
-        print(f'AbuseIPDB: {Fore.LIGHTGREEN_EX}https://www.abuseipdb.com/check/{ipv4[0]}{Fore.RESET}')
+        print(f'AbuseIPDB: {Fore.LIGHTGREEN_EX}https://www.abuseipdb.com/check/{filteredIpv4[0]}{Fore.RESET}')
         
     else:
         print(f'{Fore.WHITE}Could not detect SMTP Server. Manual reviewing required.{Fore.RESET}')
@@ -414,11 +416,11 @@ def spoofing(eheader):
 
     print(f'\n{Fore.LIGHTMAGENTA_EX}Checking with IPQualityScore...{Fore.RESET}')
 
-    if ipv4:
+    if filteredIpv4:
         # If you got an IPQualityScore API Key, you can use it here. It will generate a report for the IP Address. Uncomment the line under this comment and replace <Your API KEY> with your API Key.
         #os.system(f'curl -s -X GET --header "Key: <Your API KEY>" "https://www.ipqualityscore.com/api/json/ip/<Your API KEY>/{ipv4[0]}" > ipqualityscore.json')
         print(f'{Fore.LIGHTYELLOW_EX}Note: You can use your own IPQualityScore API Key to generate a report for the IP Address. Check the Source Code.{Fore.RESET}\n')
-        print(f'IPQualityScore: {Fore.LIGHTGREEN_EX}https://www.ipqualityscore.com/free-ip-lookup-proxy-vpn-test/lookup/{ipv4[0]}{Fore.RESET}')
+        print(f'IPQualityScore: {Fore.LIGHTGREEN_EX}https://www.ipqualityscore.com/free-ip-lookup-proxy-vpn-test/lookup/{filteredIpv4[0]}{Fore.RESET}')
 
     else:
         print(f'{Fore.WHITE}Could not detect SMTP Server. Manual reviewing required.{Fore.RESET}')
