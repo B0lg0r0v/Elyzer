@@ -1,7 +1,7 @@
 # Elyzer
 
 <p align="center">
-<img width="450" alt="Capture d’écran 2023-12-04 à 14 32 41" src="https://github.com/B0lg0r0v/Elyzer/assets/115954804/b9c11fe1-72cd-4364-9dc8-c1adc0cc748d">
+ <img src="https://github.com/B0lg0r0v/Elyzer/assets/115954804/a649da92-d063-40a2-9dff-6f1fb5996fcb">
 </p>
 
 # Table of Contents
@@ -18,10 +18,6 @@
 ## Description
 
 Elyzer is an e-mail header analyzer capable of detecting potential spoofing attempts. It will give you general information about the e-mail, the route it took, important security headers and the phishing / spoofing results. 
-
-<p align="center">
- <img width="750" alt="Capture d’écran 2023-12-04 à 14 32 41" src="https://github.com/B0lg0r0v/Elyzer/assets/115954804/70939c64-646e-4089-ad1e-3b3f78254127">
-</p>
 
 ## General Informations
 
@@ -41,7 +37,9 @@ pip3 install -r requirements.txt
 ## Usage
 Using Elyzer is quite intuitive. Give with the *-f* argument the header file.
 
-<img width="600" alt="grafik" src="https://github.com/B0lg0r0v/Elyzer/assets/115954804/8f6eb75c-934d-4aee-b508-c41021bd33db">
+```
+python3 elyzer.py -f <FILE>
+```
 
 ## Features
 Here's a quick overview of Elyzer's features:
@@ -54,8 +52,7 @@ Here's a quick overview of Elyzer's features:
 
 *Spoofing / Phishing detection feature:*
 <p align="center">
- <img width="1000" alt="grafik" src="https://github.com/B0lg0r0v/Elyzer/assets/115954804/d275fa27-7b63-4797-ad62-7e6e0386e666">
-</p>
+ <img src="https://github.com/B0lg0r0v/Elyzer/assets/115954804/229052f4-40ec-460e-8789-a0e7947134b5">
 
 ## Notes
 Credits for the *getReceivedFields* & the *getFields* functions goes to "spcnvdr" <spcnvdrr@protonmail.com>, Copyright 2020.
