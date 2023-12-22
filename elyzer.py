@@ -98,6 +98,7 @@ def routing(eHeader):
     routing.append(f'\nTimestamps between Hops:')
 
     dateCounter = 1 #separate counter for the hops in the timestamps
+    prevTimestamp = None
 
     for x in reversed(getReceivedFields(eHeader)):
         dateMatch1 = re.findall(r'\S{3},[ ]{0,4} \d{1,2} \S{3} \d{1,4} \d{2}:\d{2}:\d{2} [+-]\d{4}', x ,re.IGNORECASE)
@@ -106,22 +107,33 @@ def routing(eHeader):
 
         if dateMatch1 is not None:
             for date in reversed(dateMatch1):
-                print(f'Hop {dateCounter}: {Fore.GREEN}{date}{Fore.RESET}')
+                currentTimeStamp = datetime.strptime(date, '%a, %d %b %Y %H:%M:%S %z')
+                if prevTimestamp:
+                    delta = currentTimeStamp - prevTimestamp
+                    print(f'Hop {dateCounter}: {Fore.GREEN}{date}{Fore.RESET}, {Fore.CYAN}Delta: {delta}{Fore.RESET}')
                 routing.append(f'Hop {dateCounter}: {date}')
                 dateCounter += 1
+                prevTimestamp = currentTimeStamp
         
         elif dateMatch2 is not None:
             for date in reversed(dateMatch2):
-                print(f'Hop {dateCounter}: {Fore.GREEN}{date}{Fore.RESET}')
+                currentTimeStamp = datetime.strptime(date, '%a, %d %b %Y %H:%M:%S.%f %z')
+                if prevTimestamp:
+                    delta = currentTimeStamp - prevTimestamp
+                    print(f'Hop {dateCounter}: {Fore.GREEN}{date}{Fore.RESET}, {Fore.CYAN}Delta: {delta}{Fore.RESET}')
                 routing.append(f'Hop {dateCounter}: {date}')
                 dateCounter += 1
+                prevTimestamp = currentTimeStamp
 
         elif dateMatch3 is not None:
             for date in reversed(dateMatch3):
-                print(f'Hop {dateCounter}: {Fore.GREEN}{date}{Fore.RESET}')
+                currentTimeStamp = datetime.strptime(date, '%Y-%m-%d %H:%M:%S.%f %z')
+                if prevTimestamp:
+                    delta = currentTimeStamp - prevTimestamp
+                    print(f'Hop {dateCounter}: {Fore.GREEN}{date}{Fore.RESET}, {Fore.CYAN}Delta: {delta}{Fore.RESET}')
                 routing.append(f'Hop {dateCounter}: {date}')
                 dateCounter += 1
-
+                prevTimestamp = currentTimeStamp
 
     return '\n'.join(routing)
 
@@ -288,7 +300,7 @@ def spoofing(eheader):
         print(f'{Fore.RED}File not found.{Fore.RESET}')
         sys.exit(1)
 
-    print(f'\n{Fore.LIGHTBLUE_EX}Phishing Check: {Fore.RESET}')
+    print(f'\n{Fore.LIGHTBLUE_EX}Spoofing Check: {Fore.RESET}')
 
     #------------------------Regex and Field definitions------------------------#
 
@@ -434,7 +446,7 @@ def spoofing(eheader):
                         if any(ipaddress.ip_address(authResultOrigIP[0]) in subnet for subnet in ipSubnets):
                             print(f'{Fore.LIGHTGREEN_EX}{indent}→ No Mismatch detected.{Fore.RESET}')
                         else:
-                            print(f'{Fore.LIGHTRED_EX}{indent}→ Mismatch detected: Authentication-Results-Original ({authResultOrigIP[0]}) NOT IN SPF Record ({txtRecords}){Fore.RESET}')
+                            print(f'{Fore.LIGHTRED_EX}{indent}→ Mismatch detected: Authentication-Results-Original ({authResultOrigIP[0]}) NOT IN SPF Record ({" ".join([" ".join(t) for t in txtRecords])}){Fore.RESET}')
 
                 
                     elif not any(subnet for subnet in subnetsTmp): #if subnetTmp is empty, then we can try to get the "include" values from the txtRecords and do a lookup with them.
@@ -488,7 +500,7 @@ def spoofing(eheader):
                                 subnetsOfInclude.append(re.findall(r'ip4:(.*)', h))
                         
                         if any('ip4:' in subnet for sublist in subnetsOfInclude for subnet in sublist):
-                            print(f'{Fore.LIGHTYELLOW_EX}{indent}{indent}→ Getting deeper into the SPF Records...{Fore.RESET}')
+                            print(f'{Fore.LIGHTYELLOW_EX}{indent}{indent}Getting deeper into the SPF Records...{Fore.RESET}')
                             # extract the subnets from the list and put them in a new list
                             subnets = []
                             for subnet in subnetsOfInclude:
