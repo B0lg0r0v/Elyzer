@@ -29,11 +29,14 @@ Elyzer is an e-mail header analyzer capable of detecting potential spoofing atte
 
 ## Installation
 
+**For Unix users:**
 ```
 git clone https://github.com/B0lg0r0v/Elyzer.git
 cd Elyzer
 pip3 install -r requirements.txt
 ```
+**For Windows users:**<br><br>
+Get the compiled version from the release section. The usage is the same as for unix users.
 
 ## Usage
 Using Elyzer is quite intuitive. Give with the *-f* argument the header file.
