@@ -41,8 +41,13 @@ Get the compiled version from the release section. The usage is the same as for 
 ## Usage
 Using Elyzer is quite intuitive. Give with the *-f* argument the header file.
 
+**Unix:**
 ```
 python3 elyzer.py -f <FILE>
+```
+**Windows**
+```
+.\Elyzer.exe -f <FILE>
 ```
 
 ## Features
