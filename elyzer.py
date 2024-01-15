@@ -258,7 +258,14 @@ def envelope(eheader):
         print(f'MIME-Version: {Fore.LIGHTRED_EX}No MIME-Version{Fore.RESET}')
 
     if content['authentication-results-original'] is not None:
-        print(f'Authentication-Results-Original: {Fore.YELLOW}{content["authentication-results-original"]}{Fore.RESET}')
+        if 'spf=fail' in content['authentication-results-original'].lower():
+            print(f'Authentication-Results-Original: {Fore.LIGHTRED_EX}{content["authentication-results-original"]}{Fore.RESET}')
+        
+        elif 'spf=pass' in content['authentication-results-original'].lower():
+            print(f'Authentication-Results-Original: {Fore.GREEN}{content["authentication-results-original"]}{Fore.RESET}')
+        
+        else:
+            print(f'Authentication-Results-Original: {Fore.LIGHTYELLOW_EX}{content["authentication-results-original"]}{Fore.RESET}')
     else:
         print(f'Authentication-Results-Original: {Fore.LIGHTRED_EX}No Authentication-Results-Original{Fore.RESET}')
 
@@ -574,12 +581,14 @@ def spoofing(eheader):
        
     #------------------------Check with VirusTotal------------------------#
 
-    print(f'\n{Fore.LIGHTMAGENTA_EX}Checking with VirusTotal...{Fore.RESET}')
+    print(f'\n{Fore.LIGHTYELLOW_EX}Note: You can use your own VirusTotal, AbuseIPDB and IPQualityScore API Key to generate a report for the IP Address. Check the Source Code.{Fore.RESET}')
+
+    print(f'{Fore.LIGHTMAGENTA_EX}Checking with VirusTotal...{Fore.RESET}')
 
     if filteredIpv4:
         # If you got an VT API Key, you can use it here. It will generate a report for the IP Address. Uncomment the line under this comment and replace <Your API KEY> with your API Key.
         #os.system(f'curl -s -X GET --header "x-apikey: <Your API KEY>" "https://www.virustotal.com/api/v3/ip_addresses/{ipv4[0]}" > vt.json')
-        print(f'{Fore.LIGHTYELLOW_EX}Note: You can use your own VirusTotal API Key to generate a report for the IP Address. Check the Source Code.{Fore.RESET}\n')
+        
         print(f'Detections: {Fore.LIGHTGREEN_EX}https://www.virustotal.com/gui/ip-address/{filteredIpv4[0]}/detection{Fore.RESET}')
         print(f'Relations: {Fore.LIGHTGREEN_EX}https://www.virustotal.com/gui/ip-address/{filteredIpv4[0]}/relations{Fore.RESET}')
         print(f'Graph: {Fore.LIGHTGREEN_EX}https://www.virustotal.com/gui/ip-address/{filteredIpv4[0]}/graph{Fore.RESET}')
@@ -589,7 +598,6 @@ def spoofing(eheader):
         print(f'Votes: {Fore.LIGHTGREEN_EX}https://www.virustotal.com/gui/ip-address/{filteredIpv4[0]}/votes{Fore.RESET}')
 
     elif authResultOrigIP:
-        print(f'{Fore.LIGHTYELLOW_EX}Note: You can use your own VirusTotal API Key to generate a report for the IP Address. Check the Source Code.{Fore.RESET}\n')
         print(f'Detections: {Fore.LIGHTGREEN_EX}https://www.virustotal.com/gui/ip-address/{authResultOrigIP[0]}/detection{Fore.RESET}')
         print(f'Relations: {Fore.LIGHTGREEN_EX}https://www.virustotal.com/gui/ip-address/{authResultOrigIP[0]}/relations{Fore.RESET}')
         print(f'Graph: {Fore.LIGHTGREEN_EX}https://www.virustotal.com/gui/ip-address/{authResultOrigIP[0]}/graph{Fore.RESET}')
@@ -608,11 +616,9 @@ def spoofing(eheader):
     if filteredIpv4:
         # If you got an AbuseIPDB API Key, you can use it here. It will generate a report for the IP Address. Uncomment the line under this comment and replace <Your API KEY> with your API Key.
         #os.system(f'curl -s -X GET --header "Key: <Your API KEY>" "https://api.abuseipdb.com/api/v2/check?ipAddress={ipv4[0]}" > abuseipdb.json')
-        print(f'{Fore.LIGHTYELLOW_EX}Note: You can use your own AbuseIPDB API Key to generate a report for the IP Address. Check the Source Code.{Fore.RESET}\n')
         print(f'AbuseIPDB: {Fore.LIGHTGREEN_EX}https://www.abuseipdb.com/check/{filteredIpv4[0]}{Fore.RESET}')
         
     elif authResultOrigIP:
-        print(f'{Fore.LIGHTYELLOW_EX}Note: You can use your own AbuseIPDB API Key to generate a report for the IP Address. Check the Source Code.{Fore.RESET}\n')
         print(f'AbuseIPDB: {Fore.LIGHTGREEN_EX}https://www.abuseipdb.com/check/{authResultOrigIP[0]}{Fore.RESET}')
     
     else:
@@ -625,11 +631,9 @@ def spoofing(eheader):
     if filteredIpv4:
         # If you got an IPQualityScore API Key, you can use it here. It will generate a report for the IP Address. Uncomment the line under this comment and replace <Your API KEY> with your API Key.
         #os.system(f'curl -s -X GET --header "Key: <Your API KEY>" "https://www.ipqualityscore.com/api/json/ip/<Your API KEY>/{ipv4[0]}" > ipqualityscore.json')
-        print(f'{Fore.LIGHTYELLOW_EX}Note: You can use your own IPQualityScore API Key to generate a report for the IP Address. Check the Source Code.{Fore.RESET}\n')
         print(f'IPQualityScore: {Fore.LIGHTGREEN_EX}https://www.ipqualityscore.com/free-ip-lookup-proxy-vpn-test/lookup/{filteredIpv4[0]}{Fore.RESET}')
 
     elif authResultOrigIP:
-        print(f'{Fore.LIGHTYELLOW_EX}Note: You can use your own IPQualityScore API Key to generate a report for the IP Address. Check the Source Code.{Fore.RESET}\n')
         print(f'IPQualityScore: {Fore.LIGHTGREEN_EX}https://www.ipqualityscore.com/free-ip-lookup-proxy-vpn-test/lookup/{authResultOrigIP[0]}{Fore.RESET}')
     
     else:
