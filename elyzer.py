@@ -825,7 +825,7 @@ if __name__ == '__main__':
 
     parser = ArgumentParser() #Create the Parser.
     parser.add_argument('-f', '--file', help='give the E-Mail Header as a file.', required=True)
-    parser.add_argument('-v', '--version', action='version', version='Elyzer v0.1')
+    parser.add_argument('-v', '--version', action='version', version=f'Elyzer {CURRENT_VERSION}')
     args = parser.parse_args() #initialize the Parser.
 
     checkForUpdates()
