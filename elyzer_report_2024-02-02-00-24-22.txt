@@ -1,0 +1,96 @@
+Elyzer v0.3.2
+Author: B0lg0r0v
+https://root.security
+
+
+General Information:
+From: "Amazon.de" <shipment-tracking@amazon.de>
+To: arthur.minasyan@outlook.fr
+Subject: Zustellung heute: Bleach (Original...
+Date: Wed, 29 Nov 2023 11:16:02 +0000
+
+Relay Routing:
+Hop 1 |↓|: FROM pawp194mb2202.eurp194.prod.outlook.com TO pawp194mb2202.eurp194.prod.outlook.com WITH microsoft
+Hop 2 |↓|: FROM pawp194mb2202.eurp194.prod.outlook.com TO gv1p194mb1858.eurp194.prod.outlook.com WITH microsoft
+Hop 3 |↓|: FROM eur03-dba-obe.outbound.protection.outlook.com TO he1eur01ft087.mail.protection.outlook.com WITH microsoft
+Hop 4 |↓|: FROM he1eur01ft087.eop-eur01.prod.protection.outlook.com TO gv3p280ca0103.outlook.office365.com WITH microsoft
+Hop 5 |↓|: FROM gv3p280ca0103.swep280.prod.outlook.com TO du2p194mb2128.eurp194.prod.outlook.com WITH microsoft
+Hop 6 |↓|: FROM du2p194mb2128.eurp194.prod.outlook.com TO pawp194mb2202.eurp194.prod.outlook.com WITH https
+
+Timestamps between Hops:
+Hop 1: Wed, 29 Nov 2023 11:16:06 +0000, Delta: N/A
+Hop 2: Wed, 29 Nov 2023 11:16:06 +0000, Delta: 0:00:00
+Hop 3: Wed, 29 Nov 2023 11:16:07 +0000, Delta: 0:00:01
+Hop 4: Wed, 29 Nov 2023 11:16:07 +0000, Delta: 0:00:00
+Hop 5: Wed, 29 Nov 2023 11:16:07 +0000, Delta: 0:00:00
+Hop 6: Wed, 29 Nov 2023 11:16:09 +0000, Delta: 0:00:02
+
+
+Security Informations:
+
+Received SPF: Fail (protection.outlook.com: domain of amazon.de does not
+ designate 104.47.51.168 as permitted sender) receiver=protection.outlook.com;
+ client-ip=104.47.51.168; helo=EUR03-DBA-obe.outbound.protection.outlook.com;
+DKIM Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/simple;
+	s=ivrcnh6lde2bibpvjbrvhidms5kjngko; d=amazon.de; t=1701256562;
+	h=Date:From:Reply-To:To:Message-ID:Subject:MIME-Version:Content-Type;
+	bh=EHpBCy5wW5ChHXTRBMjiSdSS0bL7uB79pUe7JJidu/4=;
+	b=L+5R8wxyhWd2CMhvWYixUTxDjo4DVwYDowrDN44icJCEPxFvdNfg3GwB44uNMwSL
+	P+61KzQ9SK/IiHfUEuBGgXcXzx5PJ9g8xK5bng4cMAaoslbCayPxfb2KwP4u3U0NfcM
+	BeFARYt3MplR4vsM7wEf5/1sCjUtKAz0fLrA/Tx8=
+DMARC: No DMARC
+Authentication Results: spf=fail (sender IP is 104.47.51.168)
+ smtp.mailfrom=amazon.de; dkim=pass (signature was verified)
+ header.d=amazon.de;dmarc=pass action=none header.from=amazon.de;compauth=pass
+ reason=100
+X-Forefront-Antispam-Report: No X-Forefront-Antispam-Report
+X-Microsoft-Antispam: BCL:2;
+
+Interesting Headers:
+
+Envelope From: No Envelope From
+Return Path: shipment-tracking@amazon.de
+Message ID: <0102018c1acb072d-a0884189-7c42-452b-a692-c2dfa344ad55-000000@eu-west-1.amazonses.com>
+MIME-Version: 1.0
+Authentication-Results-Original: spf=pass (sender IP is 54.240.1.45)
+ smtp.mailfrom=bounces.amazon.de; dkim=pass (signature was verified)
+ header.d=amazon.de;dmarc=pass action=none header.from=amazon.de;compauth=pass
+ reason=100
+
+<---------MS Exchange Organization Headers--------->
+
+X-MS-Exchange-Organization-AuthAs: Anonymous
+X-MS-Exchange-Organization-AuthSource: 
+ HE1EUR01FT087.eop-EUR01.prod.protection.outlook.com
+X-MS-Exchange-Organization-AuthMechanism: No X-MS-Exchange-Organization-AuthMechanism
+X-MS-Exchange-Organization-Network-Message-Id: 
+ 4a920671-5c42-4fb6-8441-08dbf0cc956f
+
+<-------------------------------------------------->
+
+
+Spoofing Check:
+
+Checking for SMTP Server Mismatch...
+   No IPv4 Address detected in "FROM" Field. Doing additional checks...
+   → No Mismatch detected.
+Checking for Field Mismatches...
+Reply-To Field detected !
+   → Suspicous activity detected: "FROM" Field (shipment-tracking@amazon.de) NOT EQUAL "REPLY-TO" Field (no-reply@amazon.de)
+Return-Path Field detected !
+   → No "FROM - RETURN-PATH" Mismatch detected.
+
+Checking with VirusTotal...
+Detections: https://www.virustotal.com/gui/ip-address/54.240.1.45/detection
+Relations: https://www.virustotal.com/gui/ip-address/54.240.1.45/relations
+Graph: https://www.virustotal.com/gui/ip-address/54.240.1.45/graph
+Network Traffic: https://www.virustotal.com/gui/ip-address/54.240.1.45/network-traffic
+WHOIS: https://www.virustotal.com/gui/ip-address/54.240.1.45/whois
+Comments: https://www.virustotal.com/gui/ip-address/54.240.1.45/comments
+Votes: https://www.virustotal.com/gui/ip-address/54.240.1.45/votes
+
+Checking with AbuseIPDB...
+AbuseIPDB: https://www.abuseipdb.com/check/54.240.1.45
+
+Checking with IPQualityScore...
+IPQualityScore: https://www.ipqualityscore.com/free-ip-lookup-proxy-vpn-test/lookup/54.240.1.45

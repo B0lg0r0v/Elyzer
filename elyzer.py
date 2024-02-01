@@ -92,7 +92,7 @@ def routing(eHeader):
         try:
             if len(receivedMatch) != 0:
                 print(f'Hop {counter} |↓|: FROM {Fore.GREEN}{receivedMatch[0].lower()}{Fore.RESET} TO {Fore.GREEN}{byMatch[0].lower()}{Fore.RESET} WITH {Fore.CYAN}{withMatch[0].lower()}{Fore.RESET}')
-                routing.append(f'Hop {counter} |↓|: FROM {receivedMatch[0].lower()} TO {byMatch[0].lower()} WITH {withMatch[0].lower()}')
+                routing.append(f'Hop {counter} |↓|: FROM {receivedMatch[0].lower()} TO {byMatch[0].lower()} WITH {withMatch[0].lower()}\n')
             else:
                 print(f'{Fore.LIGHTYELLOW_EX}No match found for Hop {counter}{Fore.RESET}')
         except Exception as e:
@@ -103,6 +103,7 @@ def routing(eHeader):
 
     dateCounter = 1 #separate counter for the hops in the timestamps
     prevTimestamp = None
+    delta = None
 
     for x in reversed(getReceivedFields(eHeader)):
         dateMatch1 = re.findall(r'\S{3},[ ]{0,4} \d{1,2} \S{3} \d{1,4} \d{2}:\d{2}:\d{2} [+-]\d{4}', x ,re.IGNORECASE)
@@ -115,7 +116,7 @@ def routing(eHeader):
                 if prevTimestamp:
                     delta = currentTimeStamp - prevTimestamp
                     print(f'Hop {dateCounter}: {Fore.GREEN}{date}{Fore.RESET}, {Fore.CYAN}Delta: {delta}{Fore.RESET}')
-                routing.append(f'Hop {dateCounter}: {date}')
+                routing.append(f'Hop {dateCounter}: {date}, Delta: {delta if delta is not None else "N/A"}\n')
                 dateCounter += 1
                 prevTimestamp = currentTimeStamp
         
@@ -125,7 +126,7 @@ def routing(eHeader):
                 if prevTimestamp:
                     delta = currentTimeStamp - prevTimestamp
                     print(f'Hop {dateCounter}: {Fore.GREEN}{date}{Fore.RESET}, {Fore.CYAN}Delta: {delta}{Fore.RESET}')
-                routing.append(f'Hop {dateCounter}: {date}')
+                routing.append(f'Hop {dateCounter}: {date}, Delta: {delta if delta is not None else "N/A"}\n')
                 dateCounter += 1
                 prevTimestamp = currentTimeStamp
 
@@ -135,16 +136,16 @@ def routing(eHeader):
                 if prevTimestamp:
                     delta = currentTimeStamp - prevTimestamp
                     print(f'Hop {dateCounter}: {Fore.GREEN}{date}{Fore.RESET}, {Fore.CYAN}Delta: {delta}{Fore.RESET}')
-                routing.append(f'Hop {dateCounter}: {date}')
+                routing.append(f'Hop {dateCounter}: {date}\n, Delta: {delta if delta is not None else "N/A"}\n')
                 dateCounter += 1
                 prevTimestamp = currentTimeStamp
 
-    return '\n'.join(routing)
+    return ''.join(routing)
 
 
 def generalInformation(eheader):
     
-    gInformation =[]
+    gInformation = []
 
     try:
         with open(eheader, 'r', encoding='UTF-8') as header:
@@ -153,8 +154,21 @@ def generalInformation(eheader):
         print(f'{Fore.RED}File not found.{Fore.RESET}')
         sys.exit(1)
 
-    subject = decode_header(content['subject'])
-    decodedHeader = ''.join([str(s[0], s[1] or 'utf-8') for s in subject])
+    # Trying to decode the subject. This is far from perfect, but it works for most cases.
+    subject = content.get('subject')
+    if subject is not None:
+        decoded_subject = decode_header(subject)
+        decodedHeader = ''
+        for part, charset in decoded_subject:
+            try:
+                decodedHeader += part.decode(charset or 'utf8') if isinstance(part, bytes) else part
+            except UnicodeDecodeError:
+                decodedHeader += part.decode('iso-8859-1') if isinstance(part, bytes) else part
+    else:
+        decodedHeader = None
+    
+    #decodedHeader = ''.join([s[0].decode(s[1] or 'utf-8') if isinstance(s[0], bytes) else s[0] for s in subject])
+    
     print(f'\n{Fore.LIGHTBLUE_EX}General Information: {Fore.RESET}')
     gInformation.append(f'\nGeneral Information:\n')
 
@@ -165,7 +179,7 @@ def generalInformation(eheader):
 
     gInformation.append(f'From: {content["from"]}\n' + f'To: {content["to"]}\n' + f'Subject: {decodedHeader}\n' + f'Date: {content["date"]}\n')
     
-    return '\n'.join(gInformation)
+    return ''.join(gInformation)
 
 
 def securityInformations(eheader):
@@ -516,10 +530,10 @@ def spoofing(eheader):
                         # if the value of AuthResultOrigIP is in one of the subnets, then there is no spoofing. 
                         if any(ipaddress.ip_address(authResultOrigIP[0]) in subnet for subnet in ipSubnets):
                             print(f'{Fore.LIGHTGREEN_EX}{indent}→ No Mismatch detected.{Fore.RESET}')
-                            report.append(f'{indent}→ No Mismatch detected.')
+                            report.append(f'\n{indent}→ No Mismatch detected.')
                         else:
                             print(f'{Fore.LIGHTRED_EX}{indent}→ Mismatch detected: Authentication-Results-Original ({authResultOrigIP[0]}) NOT IN SPF Record ({" ".join([" ".join(t) for t in txtRecords])}){Fore.RESET}')
-                            report.append(f'{indent}→ Mismatch detected: Authentication-Results-Original ({authResultOrigIP[0]}) NOT IN SPF Record ({" ".join([" ".join(t) for t in txtRecords])})')
+                            report.append(f'\n{indent}→ Mismatch detected: Authentication-Results-Original ({authResultOrigIP[0]}) NOT IN SPF Record ({" ".join([" ".join(t) for t in txtRecords])})')
 
                     elif not any(subnet for subnet in subnetsTmp): #if subnetTmp is empty, then we can try to get the "include" values from the txtRecords and do a lookup with them.
                         includeTmp = []
@@ -575,7 +589,7 @@ def spoofing(eheader):
                         
                         if any('ip4:' in subnet for sublist in subnetsOfInclude for subnet in sublist):
                             print(f'{Fore.LIGHTYELLOW_EX}{indent}{indent}Getting deeper into the SPF Records...{Fore.RESET}')
-                            report.append(f'{indent}{indent}Getting deeper into the SPF Records...')
+                            report.append(f'\n{indent}{indent}Getting deeper into the SPF Records...')
                             # extract the subnets from the list and put them in a new list
                             subnets = []
                             for subnet in subnetsOfInclude:
@@ -594,10 +608,10 @@ def spoofing(eheader):
 
                             if any(ipaddress.ip_address(authResultOrigIP[0]) in subnet for subnet in ipSubnets):
                                 print(f'{Fore.LIGHTGREEN_EX}{indent}{indent}→ No Mismatch detected.{Fore.RESET}')
-                                report.append(f'{indent}{indent}→ No Mismatch detected.')
+                                report.append(f'\n{indent}{indent}→ No Mismatch detected.')
                             else:
                                 print(f'{Fore.LIGHTRED_EX}{indent}{indent}→ Mismatch detected: Authentication-Results-Original ({authResultOrigIP[0]}) NOT IN SPF Record ({subnets}){Fore.RESET}')
-                                report.append(f'{indent}{indent}→ Mismatch detected: Authentication-Results-Original ({authResultOrigIP[0]}) NOT IN SPF Record ({subnets})')
+                                report.append(f'\n{indent}{indent}→ Mismatch detected: Authentication-Results-Original ({authResultOrigIP[0]}) NOT IN SPF Record ({subnets})')
 
                     else:
                         print(f'{Fore.LIGHTRED_EX}{indent}{indent}→ Could not detect SPF Record. Manual Reviewing required.{Fore.RESET}')
@@ -621,7 +635,7 @@ def spoofing(eheader):
         if formatReplyTo == False:
             if content['from'] != content['reply-to']:
                 print(f'{Fore.LIGHTYELLOW_EX}{indent}→ Suspicous activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "REPLY-TO" Field ({content["reply-to"]}){Fore.RESET}')
-                report.append(f'{indent}→ Suspicous activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "REPLY-TO" Field ({content["reply-to"]})')
+                report.append(f'\n{indent}→ Suspicous activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "REPLY-TO" Field ({content["reply-to"]})')
             
             else:
                 print(f'{Fore.LIGHTGREEN_EX}{indent}→ No "FROM - REPLY-TO" Mismatch detected.{Fore.RESET}')
@@ -630,7 +644,7 @@ def spoofing(eheader):
         elif formatReplyTo == True:
             if fromMatch.group(1) != replyTo.group(1):
                 print(f'{Fore.LIGHTYELLOW_EX}{indent}→ Suspicous activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "REPLY-TO" Field ({replyTo.group(1)}){Fore.RESET}')
-                report.append(f'{indent}→ Suspicous activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "REPLY-TO" Field ({replyTo.group(1)})')
+                report.append(f'\n{indent}→ Suspicous activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "REPLY-TO" Field ({replyTo.group(1)})')
             
             else:
                 print(f'{Fore.LIGHTGREEN_EX}{indent}→ No "FROM - REPLY-TO" Mismatch detected.{Fore.RESET}')
@@ -643,25 +657,25 @@ def spoofing(eheader):
     if fromMatch.group(1) is not None and content['return-path'] is not None:
       
         print(f'{Fore.LIGHTGREEN_EX}Return-Path Field detected !{Fore.RESET}')
-        report.append('Return-Path Field detected !')
+        report.append('\nReturn-Path Field detected !')
       
         if formatReturnPath == False:
             if fromMatch.group(1) != content['return-path']:
                 print(f'{Fore.LIGHTYELLOW_EX}{indent}→ Suspicous activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "RETURN-PATH" Field ({content["return-path"]}){Fore.RESET}')
-                report.append(f'{indent}→ Suspicous activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "RETURN-PATH" Field ({content["return-path"]})')
+                report.append(f'\n{indent}→ Suspicous activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "RETURN-PATH" Field ({content["return-path"]})')
 
             else:
                 print(f'{Fore.LIGHTGREEN_EX}{indent}→ No "FROM - RETURN-PATH" Mismatch detected.{Fore.RESET}')
-                report.append(f'{indent}→ No "FROM - RETURN-PATH" Mismatch detected.')
+                report.append(f'\n{indent}→ No "FROM - RETURN-PATH" Mismatch detected.')
 
         elif formatReturnPath == True:
             if fromMatch.group(1) != returnToPath.group(1):
                 print(f'{Fore.LIGHTYELLOW_EX}{indent}→ Suspicous activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "RETURN-PATH" Field ({returnToPath.group(1)}){Fore.RESET}')
-                report.append(f'{indent}→ Suspicous activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "RETURN-PATH" Field ({returnToPath.group(1)})')
+                report.append(f'\n{indent}→ Suspicous activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "RETURN-PATH" Field ({returnToPath.group(1)})')
             
             else:
                 print(f'{Fore.LIGHTGREEN_EX}{indent}→ No "FROM - RETURN-PATH" Mismatch detected.{Fore.RESET}')
-                report.append(f'{indent}→ No "FROM - RETURN-PATH" Mismatch detected.')
+                report.append(f'\n{indent}→ No "FROM - RETURN-PATH" Mismatch detected.')
 
     else:
         print(f'{Fore.WHITE}No Return-Path Field detected. Skipping...{Fore.RESET}')
@@ -672,7 +686,7 @@ def spoofing(eheader):
     print(f'\n{Fore.LIGHTYELLOW_EX}Note: You can use your own VirusTotal, AbuseIPDB and IPQualityScore API Key to generate a report for the IP Address. Check the Source Code.{Fore.RESET}')
 
     print(f'{Fore.LIGHTMAGENTA_EX}Checking with VirusTotal...{Fore.RESET}')
-    report.append('\nChecking with VirusTotal...\n')
+    report.append('\n\nChecking with VirusTotal...\n')
 
     if filteredIpv4:
         # If you got an VT API Key, you can use it here. It will generate a report for the IP Address. Uncomment the line under this comment and replace <Your API KEY> with your API Key.
@@ -686,13 +700,13 @@ def spoofing(eheader):
         print(f'Comments: {Fore.LIGHTGREEN_EX}https://www.virustotal.com/gui/ip-address/{filteredIpv4[0]}/comments{Fore.RESET}')
         print(f'Votes: {Fore.LIGHTGREEN_EX}https://www.virustotal.com/gui/ip-address/{filteredIpv4[0]}/votes{Fore.RESET}')
 
-        report.append(f'Detections: https://www.virustotal.com/gui/ip-address/{filteredIpv4[0]}/detection')
-        report.append(f'Relations: https://www.virustotal.com/gui/ip-address/{filteredIpv4[0]}/relations')
-        report.append(f'Graph: https://www.virustotal.com/gui/ip-address/{filteredIpv4[0]}/graph')
-        report.append(f'Network Traffic: https://www.virustotal.com/gui/ip-address/{filteredIpv4[0]}/network-traffic')
-        report.append(f'WHOIS: https://www.virustotal.com/gui/ip-address/{filteredIpv4[0]}/whois')
-        report.append(f'Comments: https://www.virustotal.com/gui/ip-address/{filteredIpv4[0]}/comments')
-        report.append(f'Votes: https://www.virustotal.com/gui/ip-address/{filteredIpv4[0]}/votes')
+        report.append(f'Detections: https://www.virustotal.com/gui/ip-address/{filteredIpv4[0]}/detection\n')
+        report.append(f'Relations: https://www.virustotal.com/gui/ip-address/{filteredIpv4[0]}/relations\n')
+        report.append(f'Graph: https://www.virustotal.com/gui/ip-address/{filteredIpv4[0]}/graph\n')
+        report.append(f'Network Traffic: https://www.virustotal.com/gui/ip-address/{filteredIpv4[0]}/network-traffic\n')
+        report.append(f'WHOIS: https://www.virustotal.com/gui/ip-address/{filteredIpv4[0]}/whois\n')
+        report.append(f'Comments: https://www.virustotal.com/gui/ip-address/{filteredIpv4[0]}/comments\n')
+        report.append(f'Votes: https://www.virustotal.com/gui/ip-address/{filteredIpv4[0]}/votes\n')
 
 
     elif authResultOrigIP:
@@ -704,13 +718,13 @@ def spoofing(eheader):
         print(f'Comments: {Fore.LIGHTGREEN_EX}https://www.virustotal.com/gui/ip-address/{authResultOrigIP[0]}/comments{Fore.RESET}')
         print(f'Votes: {Fore.LIGHTGREEN_EX}https://www.virustotal.com/gui/ip-address/{authResultOrigIP[0]}/votes{Fore.RESET}')
 
-        report.append(f'Detections: https://www.virustotal.com/gui/ip-address/{authResultOrigIP[0]}/detection')
-        report.append(f'Relations: https://www.virustotal.com/gui/ip-address/{authResultOrigIP[0]}/relations')
-        report.append(f'Graph: https://www.virustotal.com/gui/ip-address/{authResultOrigIP[0]}/graph')
-        report.append(f'Network Traffic: https://www.virustotal.com/gui/ip-address/{authResultOrigIP[0]}/network-traffic')
-        report.append(f'WHOIS: https://www.virustotal.com/gui/ip-address/{authResultOrigIP[0]}/whois')
-        report.append(f'Comments: https://www.virustotal.com/gui/ip-address/{authResultOrigIP[0]}/comments')
-        report.append(f'Votes: https://www.virustotal.com/gui/ip-address/{authResultOrigIP[0]}/votes')
+        report.append(f'Detections: https://www.virustotal.com/gui/ip-address/{authResultOrigIP[0]}/detection\n')
+        report.append(f'Relations: https://www.virustotal.com/gui/ip-address/{authResultOrigIP[0]}/relations\n')
+        report.append(f'Graph: https://www.virustotal.com/gui/ip-address/{authResultOrigIP[0]}/graph\n')
+        report.append(f'Network Traffic: https://www.virustotal.com/gui/ip-address/{authResultOrigIP[0]}/network-traffic\n')
+        report.append(f'WHOIS: https://www.virustotal.com/gui/ip-address/{authResultOrigIP[0]}/whois\n')
+        report.append(f'Comments: https://www.virustotal.com/gui/ip-address/{authResultOrigIP[0]}/comments\n')
+        report.append(f'Votes: https://www.virustotal.com/gui/ip-address/{authResultOrigIP[0]}/votes\n')
 
 
 
@@ -740,7 +754,7 @@ def spoofing(eheader):
     #------------------------Check with IPQualityScore------------------------#
 
     print(f'\n{Fore.LIGHTMAGENTA_EX}Checking with IPQualityScore...{Fore.RESET}')
-    report.append('\nChecking with IPQualityScore...\n')
+    report.append('\n\nChecking with IPQualityScore...\n')
 
     if filteredIpv4:
         # If you got an IPQualityScore API Key, you can use it here. It will generate a report for the IP Address. Uncomment the line under this comment and replace <Your API KEY> with your API Key.
@@ -756,7 +770,7 @@ def spoofing(eheader):
         print(f'{Fore.WHITE}Could not detect SMTP Server. Manual reviewing required.{Fore.RESET}')
         report.append(f'Could not detect SMTP Server. Manual reviewing required.')
     
-    return '\n'.join(report)
+    return ''.join(report)
 
 
 
@@ -807,6 +821,7 @@ if __name__ == '__main__':
     colorama_init() #initialize colorama
     indent = ' ' * 3
     CURRENT_VERSION = 'v0.3.2'
+    savings = []
 
     parser = ArgumentParser() #Create the Parser.
     parser.add_argument('-f', '--file', help='give the E-Mail Header as a file.', required=True)
@@ -818,17 +833,19 @@ if __name__ == '__main__':
     if args.file is not None:  
         print(f'{Fore.YELLOW}E-Mail Header Analysis complete{Fore.RESET}')
 
-        generalInformation(args.file)
-        routing(args.file)
-        securityInformations(args.file)
-        envelope(args.file)
-        spoofing(args.file)
+        #generalInformation(args.file)
+        #routing(args.file)
+        #securityInformations(args.file)
+        #envelope(args.file)
+        #spoofing(args.file)
 
-        with open(f'elyzer_report_{datetime.now().strftime("%Y-%m-%d-%s")}.txt', 'w', encoding='UTF-8') as report:
-            report.write(f'Elyzer v{CURRENT_VERSION}\n\n' + generalInformation(args.file) + 
+
+        with open(f'elyzer_report_{datetime.now().strftime("%Y-%m-%d-%H-%M-%S")}.txt', 'w', encoding='UTF-8') as report:
+            report.write(f'Elyzer {CURRENT_VERSION}\n' + 'Author: B0lg0r0v\n' + 'https://root.security\n\n' +  generalInformation(args.file) + 
                          '\n' + routing(args.file) + '\n' + securityInformations(args.file) + 
                          '\n' + envelope(args.file) + '\n' + spoofing(args.file))
-            print(f'\n{Fore.GREEN}-----> Report saved as "elyzer_report_{datetime.now().strftime("%Y-%m-%d-%s")}.txt"{Fore.RESET}')
+        
+        print(f'\n\n\n{Fore.GREEN}-----> Report saved as "elyzer_report_{datetime.now().strftime("%Y-%m-%d-%H-%M-%S")}.txt"{Fore.RESET}')
 
     else:
         parser.error('E-Mail Header is required.')
