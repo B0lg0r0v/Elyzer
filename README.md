@@ -22,7 +22,6 @@ Elyzer is an e-mail header analyzer capable of detecting potential spoofing atte
 ## General Informations
 
 - Before using this tool, make sure the e-mail header is formated correctly. This tool will parse the header according to RFC 822.
-- Please make sure your file is encoded in UTF-8.
 - This tool can ONLY utilize the spoofing / phishing function if the header contains the sender's SMTP Server IPv4 address. IPv6 addresses are currently not supported.
 - Microsoft e-mail services are using IPv6 addresses, which on top of that are proxys. Finding the source address is very difficult if not simply impossible.
 - PLEASE DO NOT RELY ONLY ON THIS TOOL. Elyzer cannot garantuee you 100% accuracy.
