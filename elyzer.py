@@ -814,7 +814,7 @@ if __name__ == '__main__':
                                   
 
     Author: B0lg0r0v
-    https://root.security
+    https://arthurminasyan.com/
     """)
     print("\n")
 
