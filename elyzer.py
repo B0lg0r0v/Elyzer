@@ -10,6 +10,7 @@ from datetime import datetime
 from email.parser import BytesParser
 import ipaddress
 from email.header import decode_header
+import hashlib
 
 def getReceivedFields(eHeader):
     # credits goes to spcnvdr for helping me with this part of the code. https://github.com/spcnvdr/tracemail/tree/master Copyright 2020 spcnvdr <spcnvdrr@protonmail.com>
@@ -199,6 +200,11 @@ def securityInformations(eheader):
         if 'fail' in content['received-spf'].lower():
             print(f'Received SPF: {Fore.LIGHTRED_EX}{content["received-spf"]}{Fore.RESET}')
             secInfos.append(f'Received SPF: {content["received-spf"]}')
+        
+        elif 'None' in content['received-spf']:
+            print(f'Received SPF: {Fore.LIGHTRED_EX}{content["received-spf"]}{Fore.RESET}')
+            secInfos.append(f'Received SPF: {content["received-spf"]}')
+
         else:
             print(f'Received SPF: {Fore.GREEN}{content["received-spf"]}{Fore.RESET}')
             secInfos.append(f'Received SPF: {content["received-spf"]}')
@@ -419,7 +425,7 @@ def spoofing(eheader):
         for servers in getMx:
             mx.append(servers.exchange.to_text().lower())
 
-    except dns.resolver.LifetimeTimeout:
+    except (dns.resolver.LifetimeTimeout, dns.resolver.NoAnswer):
         print(f'{Fore.LIGHTRED_EX}Could not resolve the MX Record.{Fore.RESET}')
     # Resolving the A Records from the MX Records  
     for servers in mx:
@@ -434,8 +440,8 @@ def spoofing(eheader):
             print(f'{Fore.LIGHTGREEN_EX}No Mismatch detected.{Fore.RESET}')
             report.append(f'No Mismatch detected.')
         else:
-            print(f'{Fore.LIGHTYELLOW_EX}SMTP Server Mismatch detected. Sender SMTP Server is "{fromEmailDomain} [{"".join(filteredIpv4[0])}]" and should be "{fromEmailDomain} [{", ".join(aRecordsOfMx)}]" <- (current MX Record(s) for this domain.) {Fore.RESET}')
-            report.append(f'SMTP Server Mismatch detected. Sender SMTP Server is "{fromEmailDomain} [{"".join(filteredIpv4[0])}]" and should be "{fromEmailDomain} [{", ".join(aRecordsOfMx)}]" <- (current MX Record(s) for this domain.)')
+            print(f'{Fore.LIGHTYELLOW_EX}Potential SMTP Server Mismatch detected. Sender SMTP Server is "{fromEmailDomain} [{"".join(filteredIpv4[0])}]" and should be "{fromEmailDomain} [{", ".join(aRecordsOfMx)}]" <- (current MX Record(s) for this domain.) {Fore.RESET}')
+            report.append(f'Potential SMTP Server Mismatch detected. Sender SMTP Server is "{fromEmailDomain} [{"".join(filteredIpv4[0])}]" and should be "{fromEmailDomain} [{", ".join(aRecordsOfMx)}]" <- (current MX Record(s) for this domain.)')
     else:
 
          #------------------------ If we get no IP addresses from the received from field, we will try to get the IP Address from the "Authentication-Results-Original" Field and do diverse lookups with it. ------------------------#
@@ -502,10 +508,12 @@ def spoofing(eheader):
                         print(f'{Fore.LIGHTRED_EX}Could not resolve the SPF Record.{Fore.RESET}')
                         report.append(f'{indent}Could not resolve the SPF Record.')
                     
+
                     # get the subnets from the txtRecords
                     subnetsTmp = []
                     for txt in txtRecords:
                         for subnet in txt:
+                            # Extract the subnets from the txtRecords
                             subnetsTmp.append(re.findall(r'ip4:(.*)', subnet))
 
 
@@ -518,6 +526,7 @@ def spoofing(eheader):
                                 substrings = x.split(' ')
                                 subnets.extend(s for s in substrings if s.startswith('ip4:'))
 
+
                         # convert the subnets to ipaddress objects
                         ipSubnets = []
                         for subnet in subnets:
@@ -525,15 +534,16 @@ def spoofing(eheader):
                             networks = subnet.split(' ') # Split the string into individual networks
                             for network in networks:
                                 if '/' in network: # Ignore non-IP strings like '-all'
-                                    ipSubnets.append(ipaddress.ip_network(network))
+                                    ipSubnets.append(ipaddress.ip_network(network, strict=False))
+
         
                         # if the value of AuthResultOrigIP is in one of the subnets, then there is no spoofing. 
                         if any(ipaddress.ip_address(authResultOrigIP[0]) in subnet for subnet in ipSubnets):
                             print(f'{Fore.LIGHTGREEN_EX}{indent}→ No Mismatch detected.{Fore.RESET}')
                             report.append(f'\n{indent}→ No Mismatch detected.')
                         else:
-                            print(f'{Fore.LIGHTRED_EX}{indent}→ Mismatch detected: Authentication-Results-Original ({authResultOrigIP[0]}) NOT IN SPF Record ({" ".join([" ".join(t) for t in txtRecords])}){Fore.RESET}')
-                            report.append(f'\n{indent}→ Mismatch detected: Authentication-Results-Original ({authResultOrigIP[0]}) NOT IN SPF Record ({" ".join([" ".join(t) for t in txtRecords])})')
+                            print(f'{Fore.LIGHTRED_EX}{indent}→ Potential Mismatch detected: Authentication-Results-Original ({authResultOrigIP[0]}) NOT IN SPF Record ({" ".join([" ".join(t) for t in txtRecords])}){Fore.RESET}')
+                            report.append(f'\n{indent}→ Potential Mismatch detected: Authentication-Results-Original ({authResultOrigIP[0]}) NOT IN SPF Record ({" ".join([" ".join(t) for t in txtRecords])})')
 
                     elif not any(subnet for subnet in subnetsTmp): #if subnetTmp is empty, then we can try to get the "include" values from the txtRecords and do a lookup with them.
                         includeTmp = []
@@ -604,14 +614,14 @@ def spoofing(eheader):
                                 networks = subnet.split(' ')
                                 for network in networks:
                                     if '/' in network:
-                                        ipSubnets.append(ipaddress.ip_network(network))
+                                        ipSubnets.append(ipaddress.ip_network(network, strict=False))
 
                             if any(ipaddress.ip_address(authResultOrigIP[0]) in subnet for subnet in ipSubnets):
                                 print(f'{Fore.LIGHTGREEN_EX}{indent}{indent}→ No Mismatch detected.{Fore.RESET}')
                                 report.append(f'\n{indent}{indent}→ No Mismatch detected.')
                             else:
-                                print(f'{Fore.LIGHTRED_EX}{indent}{indent}→ Mismatch detected: Authentication-Results-Original ({authResultOrigIP[0]}) NOT IN SPF Record ({subnets}){Fore.RESET}')
-                                report.append(f'\n{indent}{indent}→ Mismatch detected: Authentication-Results-Original ({authResultOrigIP[0]}) NOT IN SPF Record ({subnets})')
+                                print(f'{Fore.LIGHTRED_EX}{indent}{indent}→ Potential Mismatch detected: Authentication-Results-Original ({authResultOrigIP[0]}) NOT IN SPF Record ({subnets}){Fore.RESET}')
+                                report.append(f'\n{indent}{indent}→ Potential Mismatch detected: Authentication-Results-Original ({authResultOrigIP[0]}) NOT IN SPF Record ({subnets})')
 
                     else:
                         print(f'{Fore.LIGHTRED_EX}{indent}{indent}→ Could not detect SPF Record. Manual Reviewing required.{Fore.RESET}')
@@ -773,6 +783,31 @@ def spoofing(eheader):
     return ''.join(report)
 
 
+   #------------------------Check if attachement is malicious or not------------------------#
+
+def check_attachment(attachment):
+    result = []
+
+    print(f'\n\n{Fore.LIGHTBLUE_EX}Checking the attachment...{Fore.RESET}')
+    result.append('\n\nChecking the attachment...\n')
+    
+    sha256 = hashlib.sha256()
+    BUFFER = 65536
+    
+    with open(attachment, 'rb') as file:
+        while True:
+            data = file.read(BUFFER)
+            if not data:
+                break
+            
+            sha256.update(data)
+
+    print(f'{indent}--> Link: {Fore.LIGHTGREEN_EX}https://www.virustotal.com/gui/file/{sha256.hexdigest()}/detection{Fore.RESET}')
+    result.append(f'--> Link: https://www.virustotal.com/gui/file/{sha256.hexdigest()}/detection')
+
+    return '\n'.join(result)
+
+     
 
 def checkForUpdates(): 
     try:
@@ -801,8 +836,7 @@ def checkForUpdates():
                 pass
                 return False    
     
-
-
+ 
 if __name__ == '__main__':
 
     print(r"""
@@ -810,22 +844,23 @@ if __name__ == '__main__':
    ____ ____  __ ____   ____ ___ 
   / __// /\ \/ //_  /  / __// _ \
  / _/ / /__\  /  / /_ / _/ / , _/
-/___//____//_/  /___//___//_/|_| v0.3.2
+/___//____//_/  /___//___//_/|_| v0.3.3
                                   
 
     Author: B0lg0r0v
-    https://root.security
+    https://arthurminasyan.com
     """)
     print("\n")
 
     colorama_init() #initialize colorama
     indent = ' ' * 3
-    CURRENT_VERSION = 'v0.3.2'
+    CURRENT_VERSION = 'v0.3.3'
     savings = []
 
     parser = ArgumentParser() #Create the Parser.
-    parser.add_argument('-f', '--file', help='give the E-Mail Header as a file.', required=True)
+    parser.add_argument('-f', '--file', help='Give the E-Mail Header as a file.', required=True)
     parser.add_argument('-v', '--version', action='version', version=f'Elyzer {CURRENT_VERSION}')
+    parser.add_argument('-a', '--attachement', help='Check if the file is malicious.')
     args = parser.parse_args() #initialize the Parser.
 
     checkForUpdates()
@@ -833,17 +868,18 @@ if __name__ == '__main__':
     if args.file is not None:  
         print(f'{Fore.YELLOW}E-Mail Header Analysis complete{Fore.RESET}')
 
-        #generalInformation(args.file)
-        #routing(args.file)
-        #securityInformations(args.file)
-        #envelope(args.file)
-        #spoofing(args.file)
-
-
-        with open(f'elyzer_report_{datetime.now().strftime("%Y-%m-%d-%H-%M-%S")}.txt', 'w', encoding='UTF-8') as report:
-            report.write(f'Elyzer {CURRENT_VERSION}\n' + 'Author: B0lg0r0v\n' + 'https://root.security\n\n' +  generalInformation(args.file) + 
-                         '\n' + routing(args.file) + '\n' + securityInformations(args.file) + 
-                         '\n' + envelope(args.file) + '\n' + spoofing(args.file))
+        if args.attachement:
+            with open(f'elyzer_report_{datetime.now().strftime("%Y-%m-%d-%H-%M-%S")}.txt', 'w', encoding='UTF-8') as report:
+                report.write(f'Elyzer {CURRENT_VERSION}\n' + 'Author: B0lg0r0v\n' + 'https://arthurminasyan.com\n\n' +  generalInformation(args.file) + 
+                            '\n' + routing(args.file) + '\n' + securityInformations(args.file) + 
+                            '\n' + envelope(args.file) + '\n' + spoofing(args.file) + '\n' + check_attachment(args.attachement)) 
+            
+        
+        else:
+            with open(f'elyzer_report_{datetime.now().strftime("%Y-%m-%d-%H-%M-%S")}.txt', 'w', encoding='UTF-8') as report:
+                report.write(f'Elyzer {CURRENT_VERSION}\n' + 'Author: B0lg0r0v\n' + 'https://arthurminasyan.com\n\n' +  generalInformation(args.file) + 
+                            '\n' + routing(args.file) + '\n' + securityInformations(args.file) + 
+                            '\n' + envelope(args.file) + '\n' + spoofing(args.file))
         
         print(f'\n\n\n{Fore.GREEN}-----> Report saved as "elyzer_report_{datetime.now().strftime("%Y-%m-%d-%H-%M-%S")}.txt"{Fore.RESET}')
 
