@@ -858,13 +858,15 @@ if __name__ == '__main__':
     CURRENT_VERSION = 'v0.3.3'
     savings = []
 
+    checkForUpdates()
+
     parser = ArgumentParser() #Create the Parser.
     parser.add_argument('-f', '--file', help='Give the E-Mail Header as a file.', required=True)
     parser.add_argument('-v', '--version', action='version', version=f'Elyzer {CURRENT_VERSION}')
     parser.add_argument('-a', '--attachement', help='Check if the file is malicious.')
     args = parser.parse_args() #initialize the Parser.
 
-    checkForUpdates()
+    
 
     if args.file is not None:  
         print(f'{Fore.YELLOW}E-Mail Header Analysis complete{Fore.RESET}')
