@@ -49,6 +49,12 @@ python3 elyzer.py -f <FILE>
 .\Elyzer.exe -f <FILE>
 ```
 
+Additionally you can give a file with the `-a` argument to Elyzer. It will then generate you a VirusTotal Link where you can see if the file is a potential malicious file or not.
+
+```
+python3 elyzer.py -f <MAIL_HEADER_FILE> -a <SUSPICIOUS_FILE>
+```
+
 ## Features
 Here's a quick overview of Elyzer's features:
  - Print general e-mail informations
@@ -63,7 +69,8 @@ Here's a quick overview of Elyzer's features:
  <img src="https://github.com/B0lg0r0v/Elyzer/assets/115954804/229052f4-40ec-460e-8789-a0e7947134b5">
 
 ## Notes
-Credits for the *getReceivedFields* & the *getFields* functions goes to "spcnvdr" <spcnvdrr@protonmail.com>, Copyright 2020.
+Credits for the *getReceivedFields* & the *getFields* functions goes to "spcnvdr" <spcnvdrr@protonmail.com>, Copyright 2020. <br>
+Also, thanks to [@triggerfx](https://github.com/triggerfx) for the custom Logo !
 
 ## Disclaimer
 This tool is primarly created for me as a project to enhance my coding skills and start creating some red team / blue team tools. It is not considered to be the most efficient tool out there.
