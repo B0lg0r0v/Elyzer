@@ -411,6 +411,7 @@ def spoofing(eheader):
 
     #------------------------check for spoofing------------------------#
     mx = []
+    messageIDMx = []
     aRecordsOfMx = []
 
     mxAuthResult = []
@@ -433,7 +434,7 @@ def spoofing(eheader):
                  
 
     print(f'\n{Fore.LIGHTMAGENTA_EX}Checking for SMTP Server Mismatch...{Fore.RESET}')
-    report.append('\nChecking for SMTP Server Mismatch...\n')
+    report.append('\nChecking for SMTP Server Mismatch...\n')  
 
     if filteredIpv4:
         if filteredIpv4[0] in aRecordsOfMx:
@@ -629,12 +630,25 @@ def spoofing(eheader):
 
         else:
             print(f'{Fore.WHITE}Could not detect SMTP Server. Manual reviewing required.{Fore.RESET}')
-            report.append(f'Could not detect SMTP Server. Manual reviewing required.')
+            report.append(f'Could not detect SMTP Server. Manual reviewing required.\n')
 
     #------------------------Check for Field Mismatches------------------------#
 
     print(f'\n{Fore.LIGHTMAGENTA_EX}Checking for Field Mismatches...{Fore.RESET}')
     report.append('\nChecking for Field Mismatches...\n')
+
+    if content['message-id'] is not None:
+        print(f'{Fore.LIGHTGREEN_EX}Message-ID Field detected !{Fore.RESET}')
+        report.append('Message-ID Field detected !\n')
+        # Get the domain name between the "<>" brackets and split it at the "@" sign
+        messageIDDomain = content['message-id'].split('@')[1].split('>')[0]
+        #print(messageIDDomain)
+        if fromEmailDomain != messageIDDomain:
+            print(f'{Fore.LIGHTYELLOW_EX}{indent}→ Suspicious activity detected: Message-ID Domain "{messageIDDomain}" NOT EQUAL "FROM" Domain "{fromEmailDomain}"{Fore.RESET}')
+            report.append(f'{indent}→ Suspicious activity detected: Message-ID Domain ({messageIDDomain}) NOT EQUAL "FROM" Domain ({fromEmailDomain})\n')
+        else:
+            print(f'{Fore.LIGHTGREEN_EX}{indent}→ No Mismatch detected.{Fore.RESET}')
+            report.append(f'{indent}→ No Mismatch detected.\n') 
 
     
     if fromMatch.group(1) is not None and content['reply-to'] is not None:
@@ -644,8 +658,8 @@ def spoofing(eheader):
         
         if formatReplyTo == False:
             if content['from'] != content['reply-to']:
-                print(f'{Fore.LIGHTYELLOW_EX}{indent}→ Suspicous activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "REPLY-TO" Field ({content["reply-to"]}){Fore.RESET}')
-                report.append(f'\n{indent}→ Suspicous activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "REPLY-TO" Field ({content["reply-to"]})')
+                print(f'{Fore.LIGHTYELLOW_EX}{indent}→ Suspicious activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "REPLY-TO" Field ({content["reply-to"]}){Fore.RESET}')
+                report.append(f'\n{indent}→ Suspicious activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "REPLY-TO" Field ({content["reply-to"]})')
             
             else:
                 print(f'{Fore.LIGHTGREEN_EX}{indent}→ No "FROM - REPLY-TO" Mismatch detected.{Fore.RESET}')
@@ -653,8 +667,8 @@ def spoofing(eheader):
 
         elif formatReplyTo == True:
             if fromMatch.group(1) != replyTo.group(1):
-                print(f'{Fore.LIGHTYELLOW_EX}{indent}→ Suspicous activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "REPLY-TO" Field ({replyTo.group(1)}){Fore.RESET}')
-                report.append(f'\n{indent}→ Suspicous activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "REPLY-TO" Field ({replyTo.group(1)})')
+                print(f'{Fore.LIGHTYELLOW_EX}{indent}→ Suspicious activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "REPLY-TO" Field ({replyTo.group(1)}){Fore.RESET}')
+                report.append(f'\n{indent}→ Suspicious activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "REPLY-TO" Field ({replyTo.group(1)})')
             
             else:
                 print(f'{Fore.LIGHTGREEN_EX}{indent}→ No "FROM - REPLY-TO" Mismatch detected.{Fore.RESET}')
@@ -662,7 +676,7 @@ def spoofing(eheader):
 
     else:
         print(f'{Fore.WHITE}No Reply-To Field detected. Skipping...{Fore.RESET}')
-        report.append('No Reply-To Field detected. Skipping...')
+        report.append('No Reply-To Field detected. Skipping...\n')
 
     if fromMatch.group(1) is not None and content['return-path'] is not None:
       
@@ -671,8 +685,8 @@ def spoofing(eheader):
       
         if formatReturnPath == False:
             if fromMatch.group(1) != content['return-path']:
-                print(f'{Fore.LIGHTYELLOW_EX}{indent}→ Suspicous activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "RETURN-PATH" Field ({content["return-path"]}){Fore.RESET}')
-                report.append(f'\n{indent}→ Suspicous activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "RETURN-PATH" Field ({content["return-path"]})')
+                print(f'{Fore.LIGHTYELLOW_EX}{indent}→ Suspicious activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "RETURN-PATH" Field ({content["return-path"]}){Fore.RESET}')
+                report.append(f'\n{indent}→ Suspicious activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "RETURN-PATH" Field ({content["return-path"]})')
 
             else:
                 print(f'{Fore.LIGHTGREEN_EX}{indent}→ No "FROM - RETURN-PATH" Mismatch detected.{Fore.RESET}')
@@ -680,8 +694,8 @@ def spoofing(eheader):
 
         elif formatReturnPath == True:
             if fromMatch.group(1) != returnToPath.group(1):
-                print(f'{Fore.LIGHTYELLOW_EX}{indent}→ Suspicous activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "RETURN-PATH" Field ({returnToPath.group(1)}){Fore.RESET}')
-                report.append(f'\n{indent}→ Suspicous activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "RETURN-PATH" Field ({returnToPath.group(1)})')
+                print(f'{Fore.LIGHTYELLOW_EX}{indent}→ Suspicious activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "RETURN-PATH" Field ({returnToPath.group(1)}){Fore.RESET}')
+                report.append(f'\n{indent}→ Suspicious activity detected: "FROM" Field ({fromMatch.group(1)}) NOT EQUAL "RETURN-PATH" Field ({returnToPath.group(1)})')
             
             else:
                 print(f'{Fore.LIGHTGREEN_EX}{indent}→ No "FROM - RETURN-PATH" Mismatch detected.{Fore.RESET}')
@@ -827,14 +841,11 @@ def checkForUpdates():
 
         if CURRENT_VERSION != latestVersion:
             if latestVersion > CURRENT_VERSION:
-                print(f'A new version ({latestVersion}) is available. Please download it from the release section on GitHub.{Fore.RESET}')
-                return True
+                print(f'A new version ({latestVersion}) is available. Please download it from the release section on GitHub.{Fore.RESET}\n')
             elif latestVersion == CURRENT_VERSION:
                 pass
-                return False
             elif latestVersion < CURRENT_VERSION:
-                pass
-                return False    
+                pass 
     
  
 if __name__ == '__main__':
@@ -844,7 +855,7 @@ if __name__ == '__main__':
    ____ ____  __ ____   ____ ___ 
   / __// /\ \/ //_  /  / __// _ \
  / _/ / /__\  /  / /_ / _/ / , _/
-/___//____//_/  /___//___//_/|_| v0.3.3
+/___//____//_/  /___//___//_/|_| v0.3.4
                                   
 
     Author: B0lg0r0v
@@ -855,7 +866,7 @@ if __name__ == '__main__':
 
     colorama_init() #initialize colorama
     indent = ' ' * 3
-    CURRENT_VERSION = 'v0.3.3'
+    CURRENT_VERSION = 'v0.3.4'
     savings = []
 
     checkForUpdates()
