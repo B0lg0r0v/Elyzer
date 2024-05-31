@@ -649,6 +649,10 @@ def spoofing(eheader):
         else:
             print(f'{Fore.LIGHTGREEN_EX}{indent}→ No Mismatch detected.{Fore.RESET}')
             report.append(f'{indent}→ No Mismatch detected.\n') 
+    
+    else:
+        print(f'{Fore.WHITE}No Message-ID Field detected. Skipping...{Fore.RESET}')
+        report.append('No Message-ID Field detected. Skipping...\n')
 
     
     if fromMatch.group(1) is not None and content['reply-to'] is not None:
