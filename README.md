@@ -49,7 +49,7 @@ python3 elyzer.py -f <FILE>
 .\Elyzer.exe -f <FILE>
 ```
 
-Additionally you can give a file with the `-a` argument to Elyzer. It will then generate you a VirusTotal Link where you can see if the file is a potential malicious file or not.
+Additionally you can give a file with the `-a` argument to Elyzer. It will then generate you a VirusTotal Link where you can see if the file is potentially malicious or not.
 
 ```
 python3 elyzer.py -f <MAIL_HEADER_FILE> -a <SUSPICIOUS_FILE>
