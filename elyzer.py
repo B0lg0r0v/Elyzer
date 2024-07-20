@@ -426,7 +426,7 @@ def spoofing(eheader):
         for servers in getMx:
             mx.append(servers.exchange.to_text().lower())
 
-    except (dns.resolver.LifetimeTimeout, dns.resolver.NoAnswer):
+    except (dns.resolver.LifetimeTimeout, dns.resolver.NoAnswer,dns.resolver.NXDOMAIN,dns.resolver.YXDOMAIN,dns.resolver.NoNameservers):
         print(f'{Fore.LIGHTRED_EX}Could not resolve the MX Record.{Fore.RESET}')
     # Resolving the A Records from the MX Records  
     for servers in mx:
