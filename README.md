@@ -12,6 +12,7 @@
   * [Installation](#installation)
   * [Usage](#usage)
   * [Features](#features)
+  * [To-Do](#to-do)
   * [Notes](#notes)
   * [Disclaimer](#disclaimer)
 
@@ -67,6 +68,11 @@ Here's a quick overview of Elyzer's features:
 *Spoofing / Phishing detection feature:*
 <p align="center">
  <img src="https://github.com/B0lg0r0v/Elyzer/assets/115954804/229052f4-40ec-460e-8789-a0e7947134b5">
+
+## To-Do
+- [ ] Add JSON output functionality.
+- [ ] Add a functionality to be able to passively query DNS information to reduce OPSEC concerns.
+
 
 ## Notes
 Credits for the *getReceivedFields* & the *getFields* functions goes to "spcnvdr" <spcnvdrr@protonmail.com>, Copyright 2020. <br>
