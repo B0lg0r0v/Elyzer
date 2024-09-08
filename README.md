@@ -97,7 +97,7 @@ Here's a quick overview of Elyzer's features:
 
 ## To-Do
 - [ ] Add JSON output functionality.
-- [ ] Add a functionality to be able to passively query DNS information to reduce OPSEC concerns.
+- [x] Add a functionality to be able to passively query DNS information to reduce OPSEC concerns.
 
 
 ## Notes
