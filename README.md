@@ -36,7 +36,7 @@ cd Elyzer
 pip3 install -r requirements.txt
 ```
 
-To to use the `-pa` argument, you need two API keys:
+To use the `-pa` argument, you need two API keys:
 
 - VirusTotal API key (https://virustotal.com)
 - Driftnet API Key (https://driftnet.io)
