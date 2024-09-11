@@ -36,6 +36,13 @@ cd Elyzer
 pip3 install -r requirements.txt
 ```
 
+To to use the `-pa` argument, you need two API keys:
+
+- VirusTotal API key (https://virustotal.com)
+- Driftnet API Key (https://driftnet.io)
+
+Insert your API keys into the variables `self.api_key` and `self.api_key_driftnet` located in the `spoofing.py` file.
+
 ## Usage
 Using Elyzer is quite intuitive. Give with the *-f* argument the header file.
 
