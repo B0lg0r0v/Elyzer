@@ -105,6 +105,7 @@ Here's a quick overview of Elyzer's features:
 ## To-Do
 - [ ] Add JSON output functionality.
 - [x] Add a functionality to be able to passively query DNS information to reduce OPSEC concerns.
+- [ ] Switching entirely to the Driftnet API
 
 
 ## Notes
