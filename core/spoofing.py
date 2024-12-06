@@ -552,22 +552,30 @@ class Spoofing:
         if response.status_code == 200:
 
             parsed_json = response.json()
-                
-            print(parsed_json)
 
-            if 'results' in parsed_json:
-                for item in parsed_json['results']:
-                    if item['type'] == 'A':
-                        print(item)
+            # First iteration is for parsing the JSON structure first
+            for x in parsed_json['results']:
+                # Second iteration is for getting the 'items' key
+                for y in x['items']:
+                    # Third iteration is for filtering the results and getting the exact host value that matches the mx_server variable
+                    if y['value'] == mx_server:
+                        # Fourth iteration is iterating again over the 'items' key, but this time we have filtered it and we can get the context key that equals to 'dns-a
+                        for z in x['items']:
+                            if z['context'] == 'dns-a':
+                                a_records.append(z['value'])
+            
             return a_records
 
 
         else:
-            print(self.colors.red(f"Error getting A records for {mx_server}: {response.status_code}"))
+            print(self.colors.red(f"[DEBUG] Error getting A records for {mx_server}: {response.status_code}"))
             return None
             
     # Funtion for fetching MX Records via the Driftnet API
     def passive_mx_records_driftnet(self, domain):
+        
+        results = []
+        
         try:
 
             url = f"https://api.driftnet.io/v1/domain/mx?host={domain}"
@@ -580,17 +588,26 @@ class Spoofing:
             # Doing the actual request
             response = requests.get(url, headers=headers)
             if response.status_code == 200:
-                parsed_data = self.parse_driftnet_response(response.json())
-                return parsed_data['all_values']
-            else:
-                print(self.colors.red(f"Error getting MX records for {domain}: {response.status_code}"))
-                return []
+
+                parsed_json = response.json()
+
+                for x in parsed_json['results']:
+                    for y in x['items']:
+                        if y['type'] == 'host':
+                            for z in x['items']:
+                                if z['context'] == 'dns-mx' and z['type'] == 'host':
+                                    results.append(z['value'])
+                                    
+
+            # filtering out the duplicates from results
+            return list(set(results))
 
         except Exception as e:
             print(self.colors.red(f"Error getting MX records for {domain}: {str(e)}"))
             return[]
             
 
+    # Revere DNS lookup via the Driftnet API
     def passive_reverse_dns_driftnet(self, ip):
         url = f"https://api.driftnet.io/v1/domain/rdns?ip={ip}"
 
@@ -611,6 +628,8 @@ class Spoofing:
             print(self.colors.red(f"Error getting reverse DNS for {ip}: {str(e)}"))
             return []
         
+
+    
     def parse_driftnet_response(self, data):
         try:
             values = []
@@ -700,20 +719,10 @@ class Spoofing:
             print(self.colors.red("Could not retrieve data from VirusTotal."))
             return ''.join(report)
 
-        print('A Records:', DF_MX_A_RECORD)
+        #print('A Records:', DF_MX_A_RECORD)
 
-        mx_records = DF_MX_A_RECORD
-        if mx_records:
-            mx.append([record['value'].lower() for record in mx_records if 'value' in record])
-
-        else:
-            print(self.colors.light_red("No MX records found via VT.."))
-            report.append(f'No MX records found via VT..\n')
-
-        for srv_list in mx:
-            for servers in srv_list:
-                a_records = self.get_a_records_for_mx(servers)
-                aRecordsOfMx.append(a_records)
+        aRecordsOfMx = DF_MX_A_RECORD
+        #print(aRecordsOfMx)
 
         print(self.colors.light_magenta("\nChecking for SMTP Server Mismatch..."))
         report.append(f'\nChecking for SMTP Server Mismatch...\n')
@@ -721,12 +730,13 @@ class Spoofing:
 
         if filteredIpv4:
             for tmp in aRecordsOfMx:
+                print(tmp)
                 for tmp2 in tmp:
                     if filteredIpv4[0] in tmp2:
                         print(self.colors.green(f'{self.indent}→ No Mismatch detected.'))
                         report.append(f'{self.indent}→ No Mismatch detected.')
                     else:
-                        print(self.colors.yellow(f'{self.indent}→ Potential SMTP Server Mismatch detected. Sender SMTP Server is {servers} [{filteredIpv4[0]}] and should be {tmp2} <- (current MX Record(s) for this domain)'))
+                        print(self.colors.yellow(f'{self.indent}→ Potential SMTP Server Mismatch detected. Sender SMTP Server is {fromEmailDomain} [{filteredIpv4[0]}] and should be {tmp2} <- (current MX Record(s) for this domain)'))
                         report.append(f'{self.indent}→ Suspicious activity detected: SMTP Server Mismatch detected.')
 
 
@@ -735,6 +745,7 @@ class Spoofing:
 
                 authResultsOrigin = re.findall(r'sender IP is ([\d.]+)', content['Authentication-Results-Original'], re.IGNORECASE)
                 if authResultsOrigin:
+                    #print(authResultsOrigin)
                     ipv4 = authResultsOrigin
                     authResultOrigIP = [ip for ip in ipv4 if ip != '127.0.0.1']
 
@@ -744,6 +755,8 @@ class Spoofing:
                 try:
                     for domain in authResultOrigIP:
                         associated_domain = self.passive_reverse_dns_driftnet(domain)
+                        # filtering duplicates
+                        associated_domain = list(dict.fromkeys(associated_domain))
                         #print(associated_domain) # Debug statement
                 
 
@@ -752,13 +765,16 @@ class Spoofing:
                         authResultFullDomain = '.'.join(tmp[-2:])
                         #print(authResultFullDomain) # Debug statement
 
-                        mx_records_from_vt = self.get_mx_records_from_vt(authResultFullDomain)
-                        #print(mx_records_from_vt) # Debug statement
+                        mx_records_from_df = self.passive_mx_records_driftnet(authResultFullDomain)
+                        #print(mx_records_from_df) # Debug statement
 
-                        for x in mx_records_from_vt:
-                            aRecordsOfMxAuthResult.append(self.get_a_records_for_mx(x))
+                        for x in mx_records_from_df:
+                            aRecordsOfMxAuthResult.append(self.passive_a_records_driftnet(x))
+                            #print(aRecordsOfMxAuthResult) # Debug statement
 
-                    #print(aRecordsOfMxAuthResult) # Moooore Debug statements
+                    # Flatten the list. Values could also be "NoneType" so we need to check that too.
+                    aRecordsOfMxAuthResult = [item for sublist in aRecordsOfMxAuthResult for item in sublist if item is not None]
+                    print(aRecordsOfMxAuthResult) # Debug statement
                     #print(aRecordsOfMx)
                     if any(x in aRecordsOfMxAuthResult for x in aRecordsOfMx):
                         print(self.colors.green(f'{self.indent}→ No Mismatch detected.'))
