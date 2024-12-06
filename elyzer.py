@@ -37,7 +37,7 @@ def checkForUpdates():
 if __name__ == '__main__':
 
     indent = ' ' * 3
-    CURRENT_VERSION = 'v0.4.0'
+    CURRENT_VERSION = 'v0.5.0'
     savings = []
 
     checkForUpdates()

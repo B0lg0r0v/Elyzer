@@ -7,6 +7,8 @@ from email.parser import BytesParser
 from core.colors import Colors
 from core.utils import Utils
 import json
+from typing import List, Optional
+
 
 
 class Spoofing:
@@ -18,7 +20,6 @@ class Spoofing:
         self.resolveIP = self.utils.resolveIP
         self.indent = "    "
         self.resolver = dns.resolver.Resolver()
-        self.api_key = "YOUR VT API KEY" # Get your API key here: https://www.virustotal.com/api-d/signup/
         self.api_key_driftnet = "YOUR DRIFTNET API KEY" # Get your API key here: https://driftnet.io
         self.base_url = "https://www.virustotal.com/api/v3"
 
@@ -535,35 +536,59 @@ class Spoofing:
 
     #------------------------This part is for the passive DNS check.------------------------#
 
-    def get_a_records_for_mx(self, mx_server):
-            
-            try:
-                #print(mx_server)
-                VT_DATA = self.get_vt_data(mx_server)
-                #print(VT_DATA)
-                if VT_DATA is None:
-                    return []
+    # Function for fetching A Records via the Driftnet API
+    def passive_a_records_driftnet(self, mx_server):
+
+
+        a_records = []  
+        url = f"https://api.driftnet.io/v1/domain/fdns?host={mx_server}"
+
+        headers = {
+            'Authorization': f'Bearer {self.api_key_driftnet}',
+            'Content-Type': 'application/json'
+        }
+
+        response = requests.get(url, headers=headers)
+        if response.status_code == 200:
+
+            parsed_json = response.json()
                 
-                a_records = VT_DATA.get('A', [])
-                return [record['value'] for record in a_records if record.get('type') == 'A'] # Return the A records
+            print(parsed_json)
+
+            if 'results' in parsed_json:
+                for item in parsed_json['results']:
+                    if item['type'] == 'A':
+                        print(item)
+            return a_records
+
+
+        else:
+            print(self.colors.red(f"Error getting A records for {mx_server}: {response.status_code}"))
+            return None
             
-            except Exception as e:
-                print(self.colors.red(f"Error getting A records for {mx_server}: {str(e)}"))
-                return []
-            
-    def get_mx_records_from_vt(self, domain):
+    # Funtion for fetching MX Records via the Driftnet API
+    def passive_mx_records_driftnet(self, domain):
         try:
 
-            VT_DATA = self.get_vt_data(domain)
-            if VT_DATA is None:
+            url = f"https://api.driftnet.io/v1/domain/mx?host={domain}"
+
+            headers = {
+                'Authorization': f'Bearer {self.api_key_driftnet}',
+                'Content-Type': 'application/json'
+            }
+
+            # Doing the actual request
+            response = requests.get(url, headers=headers)
+            if response.status_code == 200:
+                parsed_data = self.parse_driftnet_response(response.json())
+                return parsed_data['all_values']
+            else:
+                print(self.colors.red(f"Error getting MX records for {domain}: {response.status_code}"))
                 return []
-            
-            mx_records = VT_DATA.get('MX', [])
-            return [record['value'].lower() for record in mx_records if 'value' in record]
-        
+
         except Exception as e:
             print(self.colors.red(f"Error getting MX records for {domain}: {str(e)}"))
-            return []
+            return[]
             
 
     def passive_reverse_dns_driftnet(self, ip):
@@ -668,12 +693,16 @@ class Spoofing:
             report.append(f'Could not detect SMTP Server. Manual reviewing required.\n')
         
 
-        VT_DATA = self.get_vt_data(fromEmailDomain)
-        if VT_DATA is None:
+        print('Email Domain:', fromEmailDomain)
+
+        DF_MX_A_RECORD = self.passive_a_records_driftnet(fromEmailDomain)
+        if DF_MX_A_RECORD is None:
             print(self.colors.red("Could not retrieve data from VirusTotal."))
             return ''.join(report)
 
-        mx_records = VT_DATA.get('MX', [])
+        print('A Records:', DF_MX_A_RECORD)
+
+        mx_records = DF_MX_A_RECORD
         if mx_records:
             mx.append([record['value'].lower() for record in mx_records if 'value' in record])
 
