@@ -8,11 +8,6 @@ from core.utils import Utils
 from core.colors import Colors
 from email.parser import BytesParser
 
-
-
-
-
-
 class Spoofing:
 
     def __init__(self, header):
@@ -109,7 +104,6 @@ class Spoofing:
 
         #------------------------check for spoofing------------------------#
         mx = []
-        messageIDMx = []
         aRecordsOfMx = []
 
         mxAuthResult = []
@@ -697,11 +691,6 @@ class Spoofing:
 
 
         #------------------------check for spoofing------------------------#
-        mx = []
-        messageIDMx = []
-        aRecordsOfMx = []
-
-        mxAuthResult = []
         aRecordsOfMxAuthResult = []
         authResultOrigIP = None
 
@@ -1009,12 +998,6 @@ class Spoofing:
 
 
         #------------------------check for spoofing------------------------#
-        mx = []
-        messageIDMx = []
-        aRecordsOfMx = []
-
-        mxAuthResult = []
-        aRecordsOfMxAuthResult = []
         authResultOrigIP = None
 
         # Getting the Domain Name from the "From" Field
