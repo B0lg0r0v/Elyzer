@@ -1,13 +1,15 @@
-import sys
+import os
 import re
+import sys
 import requests
-import dns.resolver
 import ipaddress
-from email.parser import BytesParser
-from core.colors import Colors
+import dns.resolver
 from core.utils import Utils
-import json
-from typing import List, Optional
+from core.colors import Colors
+from email.parser import BytesParser
+
+
+
 
 
 
@@ -20,8 +22,7 @@ class Spoofing:
         self.resolveIP = self.utils.resolveIP
         self.indent = "    "
         self.resolver = dns.resolver.Resolver()
-        self.api_key_driftnet = "YOUR DRIFTNET API KEY" # Get your API key here: https://driftnet.io
-        self.base_url = "https://www.virustotal.com/api/v3"
+        self.api_key_driftnet = os.environ['DRIFTNET-API'] # Get your API key here: https://driftnet.io
 
     
     def get_vt_data(self, domain):
@@ -441,7 +442,7 @@ class Spoofing:
         #print(f'\n{Fore.LIGHTYELLOW_EX}Note: You can use your own VirusTotal, AbuseIPDB and IPQualityScore API Key to generate a report for the IP Address. Check the Source Code.{Fore.RESET}')
         print(self.colors.yellow("\nNote: You can use your own VirusTotal, AbuseIPDB and IPQualityScore API Key to generate a report for the IP Address. Check the Source Code."))
 
-        print(self.colors.magenta("Checking with VirusTotal..."))
+        print(self.colors.magenta("\nChecking with VirusTotal..."))
         report.append('\n\nChecking with VirusTotal...\n')
 
         if filteredIpv4:
@@ -568,7 +569,7 @@ class Spoofing:
 
 
         else:
-            print(self.colors.red(f"[DEBUG] Error getting A records for {mx_server}: {response.status_code}"))
+            #print(self.colors.red(f"[DEBUG] Error getting A records for {mx_server}: {response.status_code}"))
             return None
             
     # Funtion for fetching MX Records via the Driftnet API
@@ -629,8 +630,8 @@ class Spoofing:
             return []
         
 
-    
-    def parse_driftnet_response(self, data):
+    @staticmethod
+    def parse_driftnet_response(data):
         try:
             values = []
             ptr_records = []
@@ -712,45 +713,39 @@ class Spoofing:
             report.append(f'Could not detect SMTP Server. Manual reviewing required.\n')
         
 
-        print('Email Domain:', fromEmailDomain)
+        #print('Email Domain:', fromEmailDomain) # Debug statement
 
         DF_MX_A_RECORD = self.passive_a_records_driftnet(fromEmailDomain)
         if DF_MX_A_RECORD is None:
             print(self.colors.red("Could not retrieve data from VirusTotal."))
             return ''.join(report)
 
-        #print('A Records:', DF_MX_A_RECORD)
-
-        aRecordsOfMx = DF_MX_A_RECORD
-        #print(aRecordsOfMx)
+        #print('A Records:', DF_MX_A_RECORD) # Debug statement
+        DF_MX_A_RECORD = list(dict.fromkeys(DF_MX_A_RECORD))
 
         print(self.colors.light_magenta("\nChecking for SMTP Server Mismatch..."))
         report.append(f'\nChecking for SMTP Server Mismatch...\n')
 
-
         if filteredIpv4:
-            for tmp in aRecordsOfMx:
-                print(tmp)
-                for tmp2 in tmp:
-                    if filteredIpv4[0] in tmp2:
-                        print(self.colors.green(f'{self.indent}→ No Mismatch detected.'))
-                        report.append(f'{self.indent}→ No Mismatch detected.')
-                    else:
-                        print(self.colors.yellow(f'{self.indent}→ Potential SMTP Server Mismatch detected. Sender SMTP Server is {fromEmailDomain} [{filteredIpv4[0]}] and should be {tmp2} <- (current MX Record(s) for this domain)'))
-                        report.append(f'{self.indent}→ Suspicious activity detected: SMTP Server Mismatch detected.')
-
+            for tmp in DF_MX_A_RECORD:
+                if filteredIpv4[0] in tmp:
+                    print(self.colors.green(f'{self.indent}→ No Mismatch detected.'))
+                    report.append(f'{self.indent}→ No Mismatch detected.')
+                else:
+                    print(self.colors.yellow(f'{self.indent}→ Potential SMTP Server Mismatch detected. Sender SMTP Server is {fromEmailDomain} [{filteredIpv4[0]}] and should be {tmp} <- (current MX Record(s) for this domain)'))
+                    report.append(f'{self.indent}→ Suspicious activity detected: SMTP Server Mismatch detected.')
 
         else:
             if isinstance(content['Authentication-Results-Original'], str):
-
                 authResultsOrigin = re.findall(r'sender IP is ([\d.]+)', content['Authentication-Results-Original'], re.IGNORECASE)
                 if authResultsOrigin:
-                    #print(authResultsOrigin)
                     ipv4 = authResultsOrigin
                     authResultOrigIP = [ip for ip in ipv4 if ip != '127.0.0.1']
 
-            #print(authResultOrigIP)
+            else:
+                print(self.colors.white("No 'Authentication-Results-Original' Header found. Manual reviewing required."))
 
+            #print(authResultOrigIP) # Debug statement
             if authResultOrigIP:
                 try:
                     for domain in authResultOrigIP:
@@ -772,11 +767,12 @@ class Spoofing:
                             aRecordsOfMxAuthResult.append(self.passive_a_records_driftnet(x))
                             #print(aRecordsOfMxAuthResult) # Debug statement
 
-                    # Flatten the list. Values could also be "NoneType" so we need to check that too.
-                    aRecordsOfMxAuthResult = [item for sublist in aRecordsOfMxAuthResult for item in sublist if item is not None]
-                    print(aRecordsOfMxAuthResult) # Debug statement
-                    #print(aRecordsOfMx)
-                    if any(x in aRecordsOfMxAuthResult for x in aRecordsOfMx):
+                    # Flattening the list
+                    if aRecordsOfMxAuthResult:
+                        aRecordsOfMxAuthResult = [item for sublist in aRecordsOfMxAuthResult if sublist is not None for item in sublist]
+                    
+                    #print(aRecordsOfMxAuthResult) # Debug statement
+                    if any(x in aRecordsOfMxAuthResult for x in DF_MX_A_RECORD):
                         print(self.colors.green(f'{self.indent}→ No Mismatch detected.'))
                         report.append(f'{self.indent}→ No Mismatch detected.')
 
@@ -786,6 +782,9 @@ class Spoofing:
 
                 except Exception as e:
                     print(self.colors.red(f"An error occurred while querying the API: {str(e)}"))
+
+            else:
+                pass
 
         #------------------------Check for Field Mismatches------------------------#
 
@@ -869,7 +868,7 @@ class Spoofing:
         #print(f'\n{Fore.LIGHTYELLOW_EX}Note: You can use your own VirusTotal, AbuseIPDB and IPQualityScore API Key to generate a report for the IP Address. Check the Source Code.{Fore.RESET}')
         print(self.colors.yellow("\nNote: You can use your own VirusTotal, AbuseIPDB and IPQualityScore API Key to generate a report for the IP Address. Check the Source Code."))
 
-        print(self.colors.magenta("Checking with VirusTotal..."))
+        print(self.colors.magenta("\nChecking with VirusTotal..."))
         report.append('\n\nChecking with VirusTotal...\n')
 
         if filteredIpv4:
