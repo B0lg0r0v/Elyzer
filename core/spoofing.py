@@ -17,45 +17,11 @@ class Spoofing:
         self.resolveIP = self.utils.resolveIP
         self.indent = "    "
         self.resolver = dns.resolver.Resolver()
-        self.api_key_driftnet = os.environ['DRIFTNET-API'] # Get your API key here: https://driftnet.io
-
-    
-    def get_vt_data(self, domain):
-        url = f"{self.base_url}/domains/{domain}"
-        headers = {
-            "accept": "application/json",
-            "x-apikey": self.api_key
-        }
-        
-        reponse = requests.get(url, headers=headers)
-        if reponse.status_code == 200:
-            data = reponse.json()
-            return self.parse_vt_data(data)
-        
+        if 'DRIFTNET_API' not in os.environ:
+            self.api_key_driftnet = None
         else:
-            print(self.colors.red(f"Error: {reponse.status_code} - {reponse.text}"))
-            return None
+            self.api_key_driftnet = os.environ['DRIFTNET_API'] # Get your API key here: https://driftnet.io
 
-    
-    def parse_vt_data(self, data):
-        dns_records = {
-            'A': [],
-            'MX': [],
-            'TXT': [],
-            'NS': []
-        }
-        
-        attributes = data.get('data', {}).get('attributes', {})
-        last_dns_records = attributes.get('last_dns_records', [])
-
-        for record in last_dns_records:
-            record_type = record.get('type')
-            if record_type in dns_records:
-                dns_records[record_type].append(record)
-
-        return dns_records
-
-    
     #--------------------- This is the "all checks" function. It performs actively DNS resolution. ---------------------#
 
     def spoofing_all_checks(self):
@@ -532,8 +498,7 @@ class Spoofing:
     #------------------------This part is for the passive DNS check.------------------------#
 
     # Function for fetching A Records via the Driftnet API
-    def passive_a_records_driftnet(self, mx_server):
-
+    def passive_a_records_driftnet(self, mx_server) -> list:
 
         a_records = []  
         url = f"https://api.driftnet.io/v1/domain/fdns?host={mx_server}"
@@ -567,12 +532,11 @@ class Spoofing:
             return None
             
     # Funtion for fetching MX Records via the Driftnet API
-    def passive_mx_records_driftnet(self, domain):
+    def passive_mx_records_driftnet(self, domain) -> list:
         
         results = []
-        
+    
         try:
-
             url = f"https://api.driftnet.io/v1/domain/mx?host={domain}"
 
             headers = {
@@ -603,7 +567,7 @@ class Spoofing:
             
 
     # Revere DNS lookup via the Driftnet API
-    def passive_reverse_dns_driftnet(self, ip):
+    def passive_reverse_dns_driftnet(self, ip) -> list:
         url = f"https://api.driftnet.io/v1/domain/rdns?ip={ip}"
 
         headers = {
@@ -625,7 +589,7 @@ class Spoofing:
         
 
     @staticmethod
-    def parse_driftnet_response(data):
+    def parse_driftnet_response(data) -> dict:
         try:
             values = []
             ptr_records = []
@@ -649,7 +613,7 @@ class Spoofing:
 
 
     def spoofing_passive_dns(self):
-
+     
         report = []
 
         try:
@@ -706,7 +670,7 @@ class Spoofing:
 
         DF_MX_A_RECORD = self.passive_a_records_driftnet(fromEmailDomain)
         if DF_MX_A_RECORD is None:
-            print(self.colors.red("Could not retrieve data from VirusTotal."))
+            print(self.colors.red("Could not retrieve data from Driftnet."))
             return ''.join(report)
 
         #print('A Records:', DF_MX_A_RECORD) # Debug statement
@@ -732,7 +696,7 @@ class Spoofing:
                     authResultOrigIP = [ip for ip in ipv4 if ip != '127.0.0.1']
 
             else:
-                print(self.colors.white("No 'Authentication-Results-Original' Header found. Manual reviewing required."))
+                print(self.colors.red("No 'Authentication-Results-Original' Header found. Manual reviewing required."))
 
             #print(authResultOrigIP) # Debug statement
             if authResultOrigIP:

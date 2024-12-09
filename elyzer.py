@@ -1,12 +1,15 @@
-from argparse import ArgumentParser
+# -*- coding: utf-8 -*-
+import os
 import re
-import requests
 import json
-from core.colors import Colors, banner
+import requests
+
 from core.utils import Utils
 from core.spoofing import Spoofing
+from argparse import ArgumentParser
+from core.colors import Colors, banner
 from core.exp_json import ExportJson, export_to_json
-import os
+
 
 def checkForUpdates(): 
     try:

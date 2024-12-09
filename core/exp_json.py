@@ -1,9 +1,9 @@
-import json
-from core.utils import Utils
-from core.spoofing import Spoofing
-from datetime import datetime
 import re
 import os
+import json
+from core.utils import Utils
+from datetime import datetime
+from core.spoofing import Spoofing
 
 def parse_key_value(text):
         result = {}
