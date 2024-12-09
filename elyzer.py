@@ -47,7 +47,7 @@ if __name__ == '__main__':
 
     parser = ArgumentParser() # Create the Parser.
     parser.add_argument('-f', '--file', help='Give the E-Mail Header as a file.', required=True)
-    parser.add_argument('-pa', '--passive', help='Enables the passive mode. DNS resolution is performed passively through VirusTotal & HackerTarget for better OPSEC. You need to add your own VirusTotal API key to use this feature.', action='store_true')
+    parser.add_argument('-pa', '--passive', help='Enables the passive mode. DNS resolution is performed passively through Driftnet for better OPSEC. You need to add "DRIFTNET_API" as an environment variable in order to use this feature.', action='store_true')
     parser.add_argument('-nd', '--no-dns', help='Enables the no-dns mode. No DNS resolution is performed for best OPSEC. This heavily affects the results !', action='store_true')
     parser.add_argument('-q', '--quiet', help='Quiet mode. Disables banner.', action='store_true')
     parser.add_argument('-j', '--json', help='EXPERIMENTAL FEATURE. Output the results in JSON format.', action='store_true')

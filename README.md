@@ -33,15 +33,22 @@ Elyzer is an e-mail header analyzer capable of detecting potential spoofing atte
 ```
 git clone https://github.com/B0lg0r0v/Elyzer.git
 cd Elyzer
-pip3 install -r requirements.txt
+python -m pip install -r requirements.txt
 ```
 
-To use the `-pa` argument, you need two API keys:
+To use the `-pa` argument, you need one API key from Driftnet:
 
-- VirusTotal API key (https://virustotal.com)
 - Driftnet API Key (https://driftnet.io)
 
-Insert your API keys into the variables `self.api_key` and `self.api_key_driftnet` located in the `spoofing.py` file.
+Create an environment variable called `DRIFTNET_API` and insert your key as a value.
+
+```
+# On Unix systems
+export DRIFTNET_API=<YOUR KEY>
+
+# On Windows
+set DRIFTNET_API=<YOUR KEY>
+```
 
 ## Usage
 Using Elyzer is quite intuitive. Give with the *-f* argument the header file.
@@ -57,9 +64,9 @@ Full Elyzer options:
 options:
   -h, --help            show this help message and exit
   -f FILE, --file FILE  Give the E-Mail Header as a file.
-  -pa, --passive        Enables the passive mode. DNS resolution is performed passively through VirusTotal &
-                        HackerTarget for better OPSEC. You need to add your own VirusTotal API key to use this
-                        feature.
+  -pa, --passive        Enables the passive mode. DNS resolution is performed passively through Driftnet
+                        for better OPSEC. You need to add "DRIFTNET_API" as an environment variable to 
+                        use this feature.
   -nd, --no-dns         Enables the no-dns mode. No DNS resolution is performed for best OPSEC. This heavily affects
                         the results !
   -q, --quiet           Quiet mode. Disables banner.
