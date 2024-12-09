@@ -1,12 +1,15 @@
-from argparse import ArgumentParser
+# -*- coding: utf-8 -*-
+import os
 import re
-import requests
 import json
-from core.colors import Colors, banner
+import requests
+
 from core.utils import Utils
 from core.spoofing import Spoofing
+from argparse import ArgumentParser
+from core.colors import Colors, banner
 from core.exp_json import ExportJson, export_to_json
-import os
+
 
 def checkForUpdates(): 
     try:
@@ -37,14 +40,14 @@ def checkForUpdates():
 if __name__ == '__main__':
 
     indent = ' ' * 3
-    CURRENT_VERSION = 'v0.4.0'
+    CURRENT_VERSION = 'v0.5.0'
     savings = []
 
     checkForUpdates()
 
     parser = ArgumentParser() # Create the Parser.
     parser.add_argument('-f', '--file', help='Give the E-Mail Header as a file.', required=True)
-    parser.add_argument('-pa', '--passive', help='Enables the passive mode. DNS resolution is performed passively through VirusTotal & HackerTarget for better OPSEC. You need to add your own VirusTotal API key to use this feature.', action='store_true')
+    parser.add_argument('-pa', '--passive', help='Enables the passive mode. DNS resolution is performed passively through Driftnet for better OPSEC. You need to add "DRIFTNET_API" as an environment variable in order to use this feature.', action='store_true')
     parser.add_argument('-nd', '--no-dns', help='Enables the no-dns mode. No DNS resolution is performed for best OPSEC. This heavily affects the results !', action='store_true')
     parser.add_argument('-q', '--quiet', help='Quiet mode. Disables banner.', action='store_true')
     parser.add_argument('-j', '--json', help='EXPERIMENTAL FEATURE. Output the results in JSON format.', action='store_true')

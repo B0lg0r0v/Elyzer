@@ -63,7 +63,7 @@ def banner():
    ____ ____  __ ____   ____ ___ 
   / __// /\ \/ //_  /  / __// _ \
  / _/ / /__\  /  / /_ / _/ / , _/
-/___//____//_/  /___//___//_/|_| v0.4.0
+/___//____//_/  /___//___//_/|_| v0.5.0
                                   
     """+
     (Colors.light_blue("\n\tAuthor: B0lg0r0v") + Colors.light_blue("\n\thttps://arthurminasyan.com\n")))
