@@ -331,8 +331,9 @@ class Utils:
             print(f'Authentication-Results-Original: {self.colors.red("No Authentication-Results-Original")}')
             eenvelope.append(f'Authentication-Results-Original: No Authentication-Results-Original')
 
-        print(f'{self.colors.cyan("\n<---------MS Exchange Organization Headers--------->\n")}')
-        eenvelope.append(f'\n<---------MS Exchange Organization Headers--------->\n')
+        message = '\n<---------MS Exchange Organization Headers--------->\n'
+        print(f'{self.colors.cyan(message)}')
+        eenvelope.append(message)
 
         if content['x-ms-exchange-organization-authas'] is not None:
             if 'anonymous' or 'Anonymous' in content['x-ms-exchange-organization-authas']:
@@ -367,8 +368,9 @@ class Utils:
             print(f'X-MS-Exchange-Organization-Network-Message-Id: {self.colors.red("No X-MS-Exchange-Organization-Network-Message-Id")}')
             eenvelope.append(f'X-MS-Exchange-Organization-Network-Message-Id: No X-MS-Exchange-Organization-Network-Message-Id')
         
-        print(f'{self.colors.cyan("\n<-------------------------------------------------->")}')
-        eenvelope.append(f'\n<-------------------------------------------------->\n')
+        message = '\n<-------------------------------------------------->\n'
+        print(f'{self.colors.cyan(message)}')
+        eenvelope.append(message)
 
         return '\n'.join(eenvelope)
     
