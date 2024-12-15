@@ -280,8 +280,11 @@ class Utils:
                 eenvelope.append(f'Envelope From: {content["X-ORIG-EnvelopeFrom"]}')
             
             elif content['X-ORIG-EnvelopeFrom'] != fromMatch.group(1):
-                print(f'Envelope From: {self.colors.red(f"POTENTIAL SPOOFING ATTACK DETECTED: FROM ({content['from']}) NOT EQUAL ({content['X-ORIG-EnvelopeFrom']})")}')
-                eenvelope.append(f'POTENTIAL SPOOFING ATTACK DETECTED: FROM ({content["from"]}) NOT EQUAL ({content["X-ORIG-EnvelopeFrom"]})')
+                from_address = content['from']
+                orig_envelope_from = content['X-ORIG-EnvelopeFrom']
+                message = f"POTENTIAL SPOOFING ATTACK DETECTED: FROM ({from_address}) NOT EQUAL ({orig_envelope_from})"
+                print(f'Envelope From: {self.colors.red(message)}')
+                eenvelope.append(message)
 
             else:
                 print(f'Envelope From: {self.colors.green(content["X-ORIG-EnvelopeFrom"])}')
