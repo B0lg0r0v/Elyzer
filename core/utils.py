@@ -280,8 +280,11 @@ class Utils:
                 eenvelope.append(f'Envelope From: {content["X-ORIG-EnvelopeFrom"]}')
             
             elif content['X-ORIG-EnvelopeFrom'] != fromMatch.group(1):
-                print(f'Envelope From: {self.colors.red(f"POTENTIAL SPOOFING ATTACK DETECTED: FROM ({content['from']}) NOT EQUAL ({content['X-ORIG-EnvelopeFrom']})")}')
-                eenvelope.append(f'POTENTIAL SPOOFING ATTACK DETECTED: FROM ({content["from"]}) NOT EQUAL ({content["X-ORIG-EnvelopeFrom"]})')
+                from_address = content['from']
+                orig_envelope_from = content['X-ORIG-EnvelopeFrom']
+                message = f"POTENTIAL SPOOFING ATTACK DETECTED: FROM ({from_address}) NOT EQUAL ({orig_envelope_from})"
+                print(f'Envelope From: {self.colors.red(message)}')
+                eenvelope.append(message)
 
             else:
                 print(f'Envelope From: {self.colors.green(content["X-ORIG-EnvelopeFrom"])}')
@@ -328,8 +331,9 @@ class Utils:
             print(f'Authentication-Results-Original: {self.colors.red("No Authentication-Results-Original")}')
             eenvelope.append(f'Authentication-Results-Original: No Authentication-Results-Original')
 
-        print(f'{self.colors.cyan("\n<---------MS Exchange Organization Headers--------->\n")}')
-        eenvelope.append(f'\n<---------MS Exchange Organization Headers--------->\n')
+        message = '\n<---------MS Exchange Organization Headers--------->\n'
+        print(f'{self.colors.cyan(message)}')
+        eenvelope.append(message)
 
         if content['x-ms-exchange-organization-authas'] is not None:
             if 'anonymous' or 'Anonymous' in content['x-ms-exchange-organization-authas']:
@@ -364,8 +368,9 @@ class Utils:
             print(f'X-MS-Exchange-Organization-Network-Message-Id: {self.colors.red("No X-MS-Exchange-Organization-Network-Message-Id")}')
             eenvelope.append(f'X-MS-Exchange-Organization-Network-Message-Id: No X-MS-Exchange-Organization-Network-Message-Id')
         
-        print(f'{self.colors.cyan("\n<-------------------------------------------------->")}')
-        eenvelope.append(f'\n<-------------------------------------------------->\n')
+        message = '\n<-------------------------------------------------->\n'
+        print(f'{self.colors.cyan(message)}')
+        eenvelope.append(message)
 
         return '\n'.join(eenvelope)
     
