@@ -13,6 +13,7 @@
   * [Usage](#usage)
   * [Features](#features)
   * [To-Do](#to-do)
+  * [Community Projects](#community-projects)
   * [Notes](#notes)
   * [Disclaimer](#disclaimer)
 
@@ -115,6 +116,9 @@ Here's a quick overview of Elyzer's features:
 - [x] Switching entirely to the Driftnet API
 - [ ] Optimize my garbage code :D
 
+## Community Projects
+
+Check out this awesome project by [@adriy-be](https://github.com/adriy-be): a WebUI for Elyzer!<br>Github repo: https://github.com/adriy-be/ElyzerWebUi
 
 ## Notes
 Credits for the *getReceivedFields* & the *getFields* functions goes to "spcnvdr" <spcnvdrr@protonmail.com>, Copyright 2020. <br>
